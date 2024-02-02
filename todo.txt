@@ -1,5 +1,24 @@
 Backend:
+IDs are UUID
 set up endpoints
+-User
+--read: returns all data
+--update: name, location, language
+--no delete
+
+-Disability
+--Create: DisabilityID, Name, Description
+--Read: all info, not id.
+--Delete: remove from disabilities list
+
+-Symptoms
+--Create: UserUUID, SymptomID, Name, Description
+--Get: all info, not id.
+--Delete: remove from Symptoms list
+
+-Accomodations
+
+- ExtraInfo
 export as pdf
 auth
 testimonials
