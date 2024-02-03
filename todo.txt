@@ -1,0 +1,6 @@
+Backend:
+set up endpoints
+export as pdf
+auth
+testimonials
+qrcode
