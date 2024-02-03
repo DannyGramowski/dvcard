@@ -5,6 +5,7 @@ export interface Disability {
     id: string,
     name: string,
     description: string,
+    notes: string,
     symptoms: Symptom[],
-    accommodations: Accommodation[]
+    accommodations: Accommodation[],
 }

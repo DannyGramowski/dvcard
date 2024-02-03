@@ -19,7 +19,7 @@ export class AppComponent {
 
   constructor (
     private authService: AuthService
-  ) {};
+  ) { };
 
   ngOnInit() {
     console.log("init");

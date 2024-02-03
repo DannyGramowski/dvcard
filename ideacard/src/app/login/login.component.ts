@@ -19,7 +19,7 @@ export class LoginComponent {
   ) {};
 
   ngOnInit(): void {
-    this.authService.getProfile();
+    //this.authService.getProfile();
   }
   
   successCallback(signInSuccessData: FirebaseUISignInSuccessWithAuthResult) {

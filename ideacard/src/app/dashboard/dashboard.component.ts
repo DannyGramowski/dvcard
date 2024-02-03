@@ -16,9 +16,11 @@ export class DashboardComponent {
 
   constructor (private authService: AuthService) {};
 
-  ngOnInit(): void {
-    this.authService.getProfile().then(
-      profile => this.currentUser = profile
-    );
+  ngAfterContentInit(): void {
+    firebase.auth().onAuthStateChanged(() => {
+      this.authService.getProfile().then(
+        profile => {this.currentUser = profile; console.log(this.currentUser);}
+      );
+    });
   }
 }

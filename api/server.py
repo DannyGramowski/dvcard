@@ -112,6 +112,13 @@ def check_auth(id_token: Annotated[str | None, Header()] = None):
     uid = decoded_token.get('uid')
     return {'result': uid}
 
+def decode_token(id_token):
+    decoded_token = auth.verify_id_token(id_token)
+    uid = decoded_token.get('uid')
+    return uid
+
 @app.get('/profile')
-def profile():
-    return {'name': 'Test User', 'disabilities': [], 'testimonials': []}
+def profile(Id_Token: Annotated[str | None, Header()] = None):
+    uid = decode_token(Id_Token)
+    return {'name': uid, 'disabilities': [], 'testimonials': []}
+
