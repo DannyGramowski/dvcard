@@ -1,23 +1,39 @@
-from fastapi import FastAPI, Request, UploadFile, File, Form, HTTPException
+from fastapi import FastAPI, Request, UploadFile, File, Form, HTTPException, Header
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
+
 
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore, auth
 
 import secrets
+from typing import Annotated
 
 # Use a service account.
 # NOTE: This needs to be updated for production (google cloud / kubernetes) hosting.
 cred = credentials.Certificate('gcloud_key.json')
 
-app = firebase_admin.initialize_app(cred)
+fastapi_app = firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
 app = FastAPI(docs_url=None, redoc_url=None)
+
+origins = [
+    "http://localhost",
+    "http://localhost:4200",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def test():
@@ -75,17 +91,27 @@ def generate_uuid_from_ref(ref):
 
     return uuid
 
-def login(uuid):
+def login(id_token):
     """
     Logs in a user given their UUID.
     """
-    custom_token = auth.create_custom_token(uuid)
-    return custom_token
+    decoded_token = auth.verify_id_token(id_token)
+    uid = decoded_token['uid']
+    return uid
 
 @app.get('/login')
-def login_endpoint(uuid: str):
+def login_endpoint(id_token: str):
     """
     Logs in a user and returns their auth json file.
     """
-    return login(uuid)
+    return {'result': login(id_token)}
 
+@app.get('/authcheck')
+def check_auth(id_token: Annotated[str | None, Header()] = None):
+    decoded_token = auth.verify_id_token(id_token)
+    uid = decoded_token.get('uid')
+    return {'result': uid}
+
+@app.get('/profile')
+def profile():
+    return {'name': 'Test User', 'disabilities': [], 'testimonials': []}
