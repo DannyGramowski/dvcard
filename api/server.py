@@ -5,7 +5,7 @@ from fastapi.templating import Jinja2Templates
 
 import firebase_admin
 from firebase_admin import credentials
-from firebase_admin import firestore
+from firebase_admin import firestore, auth
 
 import secrets
 
@@ -74,3 +74,18 @@ def generate_uuid_from_ref(ref):
             break
 
     return uuid
+
+def login(uuid):
+    """
+    Logs in a user given their UUID.
+    """
+    custom_token = auth.create_custom_token(uuid)
+    return custom_token
+
+@app.get('/login')
+def login_endpoint(uuid: str):
+    """
+    Logs in a user and returns their auth json file.
+    """
+    return login(uuid)
+
