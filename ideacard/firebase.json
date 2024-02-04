@@ -1,0 +1,9 @@
+{
+  "hosting": [
+    {
+      "target": "ideacard",
+      "source": ".",
+      "frameworksBackend": {}
+    }
+  ]
+}

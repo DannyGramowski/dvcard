@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
 
 @Component({
   selector: 'app-testimonials',
@@ -10,12 +8,5 @@ import { getFirestore } from "firebase/firestore";
   styleUrl: './testimonials.component.css'
 })
 export class TestimonialsComponent {
-  variable: string = "Test";
 
-  constructor() {};
-
-  onLoadData() {
-    console.log('rna');
-    this.variable = "New";
-  }
 }

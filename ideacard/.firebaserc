@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "dvcard-945d1": {
+      "hosting": {
+        "ideacard": [
+          "dvcard-945d1"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "dvcard-945d1"
+  }
+}
