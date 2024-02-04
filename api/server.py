@@ -6,6 +6,7 @@ from fastapi.templating import Jinja2Templates
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+from data_classes import Symptom, Accommodation, User
 
 import secrets
 
@@ -23,14 +24,14 @@ app = FastAPI(docs_url=None, redoc_url=None)
 def test():
     users_ref = db.collection("users")
     docs = users_ref.stream()
-    create_user("Joe", "random_account")
+    # create_user("Joe", "random_account")
 
     for doc in docs:
         print(f"{doc.id} => {doc.to_dict()}")
     return {"status": True}
 
-
-def create_user(name, account):
+@app.post("/user")
+def create_user(user: User):
     """
     Creates a new user in the Firestore database.
     """
@@ -40,11 +41,13 @@ def create_user(name, account):
 
     # Add user and populate with starter data
     doc_ref = ref.document(uuid)
-    doc_ref.set({"uuid": uuid, "name": name, "account": account, "language": None, "location": None, "photo": None, "lastexport": None})
+    doc_ref.set({"uuid": user.id, "name": user.name, "account": account, "language": None, "location": None, "photo": None, "lastexport": None})
     
     # Return UUID
     return uuid
 
+@app.post("/disability")
+#Disabilities
 def add_disability(user_id, disability_id, name, description):
     """
     Adds a new disability to the specified user.
@@ -55,6 +58,13 @@ def add_disability(user_id, disability_id, name, description):
 
     # Return disability_id
     return disability_id
+
+def get_disabilities(user_id):
+    """
+    Gets all of the disabilities of the specified user.
+    """
+    doc_ref = db.collection("users").document(user_id).collection("disabilities")
+
 
 def generate_uuid_from_ref(ref):
     """
