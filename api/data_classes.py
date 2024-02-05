@@ -39,7 +39,6 @@ class User(BaseModel):
     name: str
     language: str
     location: str
-    
 
     def __init__(self, id, name, language="EN", location="US", accommodations=None, symptoms=None, extra_info=""):
         self.id = id
@@ -49,4 +48,11 @@ class User(BaseModel):
         self.accommodations = accommodations
         self.symptoms = symptoms
         self.extra_info = extra_info
+
+
+class Testimonial(BaseModel):
+    name: str
+    description: str
+    relationship: str
+    #need uuid for post but dont store in database
     

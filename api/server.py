@@ -4,7 +4,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 
-
 import firebase_admin
 from data_classes import Symptom, Accommodation, User
 from firebase_admin import firestore, auth, credentials
@@ -132,7 +131,7 @@ def add_disability(user_id: str, disability_id: str, name: str, description: str
     return disability_id
 
 @app.get("/disability")
-def get_disabilities(user_id):
+def get_disabilities(user_id: str):
     """
     Gets all of the disabilities of the specified user.
     """
@@ -177,6 +176,72 @@ def delete_disability(user_id: str, disability_id: str):
     doc_ref = user.collection(DISABILITIES).document(disability_id)
     doc_ref.delete()
     return {"success": f"deleted {disability_id}"}
+
+#Symptoms
+@app.post("/symptom")
+def add_symptom(user_id: str, disability_id: str, symptom_id: str, name: str, description: str):
+    """
+    Adds a new symptom to the specified user and disability.
+    """
+    # Add disability and populate with specified data
+    user = db.collection(USERS).document(user_id)
+    if user == {"error": "user does not exist"}:
+        return {"error": "user does not exist"}
+
+    doc_ref = user.collection(DISABILITIES).document(disability_id).collection(SYMPTOMS).document(symptom_id)
+    doc_ref.set({"id": symptom_id, "name": name, "description": description})
+
+    return symptom_id
+
+@app.get("/symptom")
+def get_symptom(user_id: str, disability_id: str):
+    """
+    Gets all of the symptom of the specified user and disability.
+    """
+    disabilities = dict()
+    disability_ref = db.collection(USERS).document(user_id).collection(DISABILITIES).document(disability_id).collection(SYMPTOMS)
+    for disability in disability_ref.stream():
+        disabilities[disability.id] = disability_ref.document(disability.id).get().to_dict()
+
+    return disabilities
+
+@app.put("/symptom")
+def update_symptom(user_id: str, disability_id: str, symptom_id:str, name: str = None, description: str = None):
+    """
+    Updates disability of the specified user.
+    """
+    # Update symptom data
+    user = db.collection(USERS).document(user_id)
+    if user == {"error": "user does not exist"}:
+        return {"error": "user does not exist"}
+
+    doc_ref = user.collection(DISABILITIES).document(disability_id).collection(SYMPTOMS).document(symptom_id)
+    # if not doc_ref.exists():
+    #     return {"error": "disability does not exist"}
+
+    symptom = doc_ref.get().to_dict()
+
+    if name is not None:
+        symptom["name"] = name
+    if description is not None:
+        symptom["description"] = description
+
+    doc_ref.set(symptom)
+
+@app.delete("/symptom")
+def delete_symptom(user_id: str, disability_id: str, symptom_id: str):
+    """
+    Deletes the syptom from the disability
+    """
+    user = db.collection(USERS).document(user_id)
+    if user == {"error": "user does not exist"}:
+        return {"error": "user does not exist"}
+
+    doc_ref = user.collection(DISABILITIES).document(disability_id).collection(SYMPTOMS).document(symptom_id)
+    doc_ref.delete()
+    return {"success": f"deleted {disability_id}"}
+
+
 
 def generate_uuid_from_ref(ref):
     """
