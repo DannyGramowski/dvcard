@@ -12,6 +12,11 @@ from firebase_admin import firestore, auth, credentials
 import secrets
 from typing import Annotated
 
+USERS = "users"
+DISABILITIES = "disabilities"
+SYMPTOMS = "symptoms"
+ACCOMMODATIONS = "accommodations"
+
 # Use a service account.
 # NOTE: This needs to be updated for production (google cloud / kubernetes) hosting.
 cred = credentials.Certificate('gcloud_key.json')
@@ -37,7 +42,7 @@ app.add_middleware(
 
 @app.get("/")
 def test():
-    users_ref = db.collection("users")
+    users_ref = db.collection(USERS)
     docs = users_ref.stream()
     # create_user("Joe", "random_account")
 
@@ -57,7 +62,7 @@ def create_user(name: str, language: str):
     Creates a new user in the Firestore database.
     """
     # Generate UUID
-    ref = db.collection("users")
+    ref = db.collection(USERS)
     uuid = generate_uuid_from_ref(ref)
 
     # Add user and populate with starter data
@@ -79,7 +84,7 @@ def create_user(name: str, language: str):
 # will swap over to auth when I figure that out. same for all the other ones
 @app.get("/user")
 def get_user(uuid: str):
-    ref = db.collection("users")
+    ref = db.collection(USERS)
     user = ref.document(uuid).get()
     if not user.exists():
         return {"error": "user does not exist"}
@@ -106,24 +111,21 @@ def update_user(uuid: str, name: str = None, language: str = None, location: str
     if lastexport is not None:
         user["lastexport"] = lastexport
 
-    doc_ref = db.collection("users").document(uuid)
+    doc_ref = db.collection(USERS).document(uuid)
     doc_ref.set(user)
 
 #Disabilities
 @app.post("/disability")
-def add_disability(user_id, disability_id, name, description):
+def add_disability(user_id: str, disability_id: str, name: str, description: str):
     """
     Adds a new disability to the specified user.
     """
     # Add disability and populate with specified data
-    user = db.collection("users").document(user_id)
+    user = db.collection(USERS).document(user_id)
     if user == {"error": "user does not exist"}:
         return {"error": "user does not exist"}
 
-    dis_ref = user.collection("disabilities").get()
-    if len(dis_ref) == 0:
-        print("no dis")
-    doc_ref = user.collection("disabilities").document(disability_id)
+    doc_ref = user.collection(DISABILITIES).document(disability_id)
     doc_ref.set({"id": disability_id, "name": name, "description": description, "extrainfo": ""})
 
     # Return disability_id
@@ -134,15 +136,47 @@ def get_disabilities(user_id):
     """
     Gets all of the disabilities of the specified user.
     """
-    disabilities = []
+    disabilities = dict()
     disability_ref = db.collection("users").document(user_id).collection("disabilities")
     for disability in disability_ref.stream():
-        print(disability.id, disability_ref.document(disability.id).get().to_dict())
-       # disabilities.append(disability_ref.document(disability.id).get())
+        disabilities[disability.id] = disability_ref.document(disability.id).get().to_dict()
 
-    print(disabilities)
     return disabilities
 
+@app.put("/disability")
+def update_disabilites(user_id: str, disability_id: str, name: str = None, description: str = None, extrainfo: str = None):
+    """
+    Updates disability of the specified user.
+    """
+    # Add disability and populate with specified data
+    user = db.collection(USERS).document(user_id)
+    if user == {"error": "user does not exist"}:
+        return {"error": "user does not exist"}
+
+    doc_ref = user.collection(DISABILITIES).document(disability_id)
+    # if not doc_ref.exists():
+    #     return {"error": "disability does not exist"}
+
+    disability = doc_ref.get().to_dict()
+
+    if name is not None:
+        disability["name"] = name
+    if description is not None:
+        disability["description"] = description
+    if extrainfo is not None:
+        disability["extrainfo"] = extrainfo
+
+    doc_ref.set(disability)
+
+@app.delete("/disability")
+def delete_disability(user_id: str, disability_id: str):
+    user = db.collection(USERS).document(user_id)
+    if user == {"error": "user does not exist"}:
+        return {"error": "user does not exist"}
+
+    doc_ref = user.collection(DISABILITIES).document(disability_id)
+    doc_ref.delete()
+    return {"success": f"deleted {disability_id}"}
 
 def generate_uuid_from_ref(ref):
     """
