@@ -80,14 +80,22 @@ def create_user(name: str, language: str):
 @app.get("/user")
 def get_user(uuid: str):
     ref = db.collection("users")
-    user = ref.document(uuid).get().to_dict()
+    user = ref.document(uuid).get()
+    if not user.exists():
+        return {"error": "user does not exist"}
     user.pop("uuid")
     return user
 
 
 @app.put("/user")
 def update_user(uuid: str, name: str = None, language: str = None, location: str = None, lastexport: str = None):
+    """
+    Update user attributes besides disabilities
+    """
     user = get_user(uuid)
+    if user == {"error": "user does not exist"}:
+        return {"error": "user does not exist"}
+    
     user["uuid"] = uuid
     if name is not None:
         user["name"] = name
@@ -101,24 +109,39 @@ def update_user(uuid: str, name: str = None, language: str = None, location: str
     doc_ref = db.collection("users").document(uuid)
     doc_ref.set(user)
 
-@app.post("/disability")
 #Disabilities
+@app.post("/disability")
 def add_disability(user_id, disability_id, name, description):
     """
     Adds a new disability to the specified user.
     """
     # Add disability and populate with specified data
-    doc_ref = db.collection("users").document(user_id).collection("disabilities").document(disability_id)
-    doc_ref.set({"id": disability_id, "name": name, "description": description})
+    user = db.collection("users").document(user_id)
+    if user == {"error": "user does not exist"}:
+        return {"error": "user does not exist"}
+
+    dis_ref = user.collection("disabilities").get()
+    if len(dis_ref) == 0:
+        print("no dis")
+    doc_ref = user.collection("disabilities").document(disability_id)
+    doc_ref.set({"id": disability_id, "name": name, "description": description, "extrainfo": ""})
 
     # Return disability_id
     return disability_id
 
+@app.get("/disability")
 def get_disabilities(user_id):
     """
     Gets all of the disabilities of the specified user.
     """
-    doc_ref = db.collection("users").document(user_id).collection("disabilities")
+    disabilities = []
+    disability_ref = db.collection("users").document(user_id).collection("disabilities")
+    for disability in disability_ref.stream():
+        print(disability.id, disability_ref.document(disability.id).get().to_dict())
+       # disabilities.append(disability_ref.document(disability.id).get())
+
+    print(disabilities)
+    return disabilities
 
 
 def generate_uuid_from_ref(ref):
