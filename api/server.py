@@ -20,7 +20,7 @@ fastapi_app = firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
-app = FastAPI(docs_url=None, redoc_url=None)
+app = FastAPI()
 
 origins = [
     "http://localhost",
@@ -45,8 +45,14 @@ def test():
         print(f"{doc.id} => {doc.to_dict()}")
     return {"status": True}
 
+def decode_token(id_token):
+    decoded_token = auth.verify_id_token(id_token)
+    uid = decoded_token.get('uid')
+    return uid
+
+
 @app.post("/user")
-def create_user(user: User):
+def create_user(name: str, language: str):
     """
     Creates a new user in the Firestore database.
     """
@@ -56,10 +62,44 @@ def create_user(user: User):
 
     # Add user and populate with starter data
     doc_ref = ref.document(uuid)
-    doc_ref.set({"uuid": user.id, "name": user.name, "language": None, "location": None, "photo": None, "lastexport": None})
+    doc_ref.set({"uuid": uuid, "name": name, "language": language, "location": None, "photo": None, "lastexport": None})
     
     # Return UUID
     return uuid
+
+# def get_user(Id_Token: Annotated[str | None, Header()] = None):
+#     uid = decode_token(Id_Token)
+#     ref = db.collection("users")
+#     user_ref = ref.document(uid)
+
+#     print(user_ref)
+
+#     return 
+
+# will swap over to auth when I figure that out. same for all the other ones
+@app.get("/user")
+def get_user(uuid: str):
+    ref = db.collection("users")
+    user = ref.document(uuid).get().to_dict()
+    user.pop("uuid")
+    return user
+
+
+@app.put("/user")
+def update_user(uuid: str, name: str = None, language: str = None, location: str = None, lastexport: str = None):
+    user = get_user(uuid)
+    user["uuid"] = uuid
+    if name is not None:
+        user["name"] = name
+    if language is not None:
+        user["language"] = language
+    if location is not None:
+        user["location"] = location
+    if lastexport is not None:
+        user["lastexport"] = lastexport
+
+    doc_ref = db.collection("users").document(uuid)
+    doc_ref.set(user)
 
 @app.post("/disability")
 #Disabilities
@@ -87,7 +127,8 @@ def generate_uuid_from_ref(ref):
     Guaranteed not to overlap any existing id's.
     """
     uuid = None
-
+    found = False
+ 
     while True:
         uuid = secrets.token_urlsafe(10)
         docs = ref.stream()
@@ -121,10 +162,7 @@ def check_auth(id_token: Annotated[str | None, Header()] = None):
     uid = decoded_token.get('uid')
     return {'result': uid}
 
-def decode_token(id_token):
-    decoded_token = auth.verify_id_token(id_token)
-    uid = decoded_token.get('uid')
-    return uid
+
 
 @app.get('/profile')
 def profile(Id_Token: Annotated[str | None, Header()] = None):
