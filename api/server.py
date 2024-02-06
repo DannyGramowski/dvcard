@@ -15,6 +15,7 @@ USERS = "users"
 DISABILITIES = "disabilities"
 SYMPTOMS = "symptoms"
 ACCOMMODATIONS = "accommodations"
+TESTIMONIALS = "testimonials"
 
 # Use a service account.
 # NOTE: This needs to be updated for production (google cloud / kubernetes) hosting.
@@ -264,7 +265,6 @@ def add_accommodation(user_id: str, disability_id: str, accommodation_id: str, n
     doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)])
     if doc_ref[0] is False:
         return doc_ref[1]
-    print(doc_ref[1])
     doc_ref = doc_ref[1].collection(ACCOMMODATIONS).document(accommodation_id)
     doc_ref.set({"id": accommodation_id, "name": name, "description": description})
 
@@ -314,6 +314,44 @@ def delete_accommodation(user_id: str, disability_id: str, accommodation_id: str
     doc_ref[1].delete()
     return {"success": f"deleted {disability_id}"}
 
+
+def get_testimonial_id(user_id: str):
+    """
+    Returns the next largest number since testimonials will be ordered sequentially
+    """
+    doc_ref = get_doc([(USERS, user_id)])[1].collection(TESTIMONIALS)
+    num = -1
+    for testimonial in doc_ref.stream():
+        num = max(int(testimonial.id), num)
+    return num + 1
+
+#Testimonials
+@app.post("/testimonial")
+def add_testimonial(user_to_id: str, from_name: str, description: str, relationship: str): # date?
+        doc_ref = get_doc([(USERS, user_to_id)])
+        if doc_ref[0] is False:
+            return doc_ref[1]
+        
+        testimonial_id = get_testimonial_id(user_to_id)
+        print("testimonial id", testimonial_id)
+        doc_ref = doc_ref[1].collection(TESTIMONIALS).document(str(testimonial_id))
+        doc_ref.set({"id": testimonial_id, "fromname": from_name, "description": description, "relationship": relationship})
+
+@app.get("/testimonial")
+def get_testimonial(user_id: str):
+    testimonials = dict()
+    doc_ref = get_doc([(USERS, user_id)])
+    if doc_ref[0] is False:
+        return doc_ref[1]
+    
+    testimonial_ref = doc_ref[1].collection(TESTIMONIALS)
+    for testimonial in testimonial_ref.stream():
+        testimonials[testimonial.id] = testimonial_ref.document(testimonial.id).get().to_dict()
+
+    return testimonials
+
+def get_profile(user_id: str):
+    pass
 
 
 def generate_uuid_from_ref(ref):

@@ -1,6 +1,3 @@
-add error checking to endpoints
-finish symptom
-add accommodation
 add testimonial
 add public profile functionality
 -fetch
