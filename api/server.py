@@ -239,7 +239,7 @@ def update_symptom(user_id: str, disability_id: str, symptom_id:str, name: str =
     if description is not None:
         symptom["description"] = description
 
-    doc_ref.set(symptom)
+    doc_ref[1].set(symptom)
 
 @app.delete("/symptom")
 def delete_symptom(user_id: str, disability_id: str, symptom_id: str):
@@ -248,6 +248,67 @@ def delete_symptom(user_id: str, disability_id: str, symptom_id: str):
     """
 
     doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id), (SYMPTOMS, symptom_id)])
+    if doc_ref[0] is False:
+        return doc_ref[1]
+    doc_ref[1].delete()
+    return {"success": f"deleted {disability_id}"}
+
+
+#Accommodation
+@app.post("/accommodation")
+def add_accommodation(user_id: str, disability_id: str, accommodation_id: str, name: str, description: str):
+    """
+    Adds a new accommodation to the specified user and disability.
+    """
+
+    doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)])
+    if doc_ref[0] is False:
+        return doc_ref[1]
+    print(doc_ref[1])
+    doc_ref = doc_ref[1].collection(ACCOMMODATIONS).document(accommodation_id)
+    doc_ref.set({"id": accommodation_id, "name": name, "description": description})
+
+    return accommodation_id
+
+@app.get("/accommodation")
+def get_accommodation(user_id: str, disability_id: str):
+    """
+    Gets all of the symptom of the specified user and disability.
+    """
+    accommodations = dict()
+    disability_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)])
+    if disability_ref[0] is False:
+        return disability_ref[1]
+    
+    accommodation_ref = disability_ref[1].collection(ACCOMMODATIONS)
+    for accommodation in accommodation_ref.stream():
+        accommodations[accommodation.id] = accommodation_ref.document(accommodation.id).get().to_dict()
+
+    return accommodations
+
+@app.put("/accommodation")
+def update_symptom(user_id: str, disability_id: str, accommodation_id:str, name: str = None, description: str = None):
+    """
+    Updates disability of the specified user.
+    """
+    doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id), (ACCOMMODATIONS, accommodation_id)])
+    if doc_ref[0] is False:
+        return doc_ref[1]
+    accommodation = doc_ref[1].get().to_dict()
+    if name is not None:
+        accommodation["name"] = name
+    if description is not None:
+        accommodation["description"] = description
+
+    doc_ref[1].set(accommodation)
+
+@app.delete("/accommodation")
+def delete_accommodation(user_id: str, disability_id: str, accommodation_id: str):
+    """
+    Deletes the accommodation from the disability
+    """
+
+    doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id), (ACCOMMODATIONS, accommodation_id)])
     if doc_ref[0] is False:
         return doc_ref[1]
     doc_ref[1].delete()
