@@ -54,7 +54,6 @@ def decode_token(id_token):
     uid = decoded_token.get('uid')
     return uid
 
-
 def get_doc(input: [(str, str)]):
     """
     [(str, str)] a list of tuples where the first one is the collection name(ie. users) and the second str is the id of the document
@@ -166,18 +165,11 @@ def update_disabilites(user_id: str, disability_id: str, name: str = None, descr
     """
     Updates disability of the specified user.
     """
-    # Add disability and populate with specified data
-    user = db.collection(USERS).document(user_id)
-    if user == {"error": "user does not exist"}:
-        return {"error": "user does not exist"}
-
     doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)])
     if doc_ref[0] is False:
         return doc_ref[1]
     
     doc_ref = doc_ref[1]
-    # if not doc_ref.exists():
-    #     return {"error": "disability does not exist"}
 
     disability = doc_ref.get().to_dict()
 
@@ -207,11 +199,12 @@ def add_symptom(user_id: str, disability_id: str, symptom_id: str, name: str, de
     Adds a new symptom to the specified user and disability.
     """
     # Add disability and populate with specified data
-    user = db.collection(USERS).document(user_id)
-    if user == {"error": "user does not exist"}:
-        return {"error": "user does not exist"}
 
-    doc_ref = user.collection(DISABILITIES).document(disability_id).collection(SYMPTOMS).document(symptom_id)
+
+    doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)]) #user.collection(DISABILITIES).document(disability_id).collection(SYMPTOMS).document(symptom_id)
+    if doc_ref[0] is False:
+        return doc_ref[1]
+    doc_ref = doc_ref[1].collection(SYMPTOMS).document(symptom_id)
     doc_ref.set({"id": symptom_id, "name": name, "description": description})
 
     return symptom_id
@@ -221,29 +214,26 @@ def get_symptom(user_id: str, disability_id: str):
     """
     Gets all of the symptom of the specified user and disability.
     """
-    disabilities = dict()
-    disability_ref = db.collection(USERS).document(user_id).collection(DISABILITIES).document(disability_id).collection(SYMPTOMS)
-    for disability in disability_ref.stream():
-        disabilities[disability.id] = disability_ref.document(disability.id).get().to_dict()
+    symptoms = dict()
+    disability_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)])
+    if disability_ref[0] is False:
+        return disability_ref[1]
+    
+    symptom_ref = disability_ref[1].collection(SYMPTOMS)
+    for symptom in symptom_ref.stream():
+        symptoms[symptom.id] = symptom_ref.document(symptom.id).get().to_dict()
 
-    return disabilities
+    return symptoms
 
 @app.put("/symptom")
 def update_symptom(user_id: str, disability_id: str, symptom_id:str, name: str = None, description: str = None):
     """
     Updates disability of the specified user.
     """
-    # Update symptom data
-    user = db.collection(USERS).document(user_id)
-    if user == {"error": "user does not exist"}:
-        return {"error": "user does not exist"}
-
-    doc_ref = user.collection(DISABILITIES).document(disability_id).collection(SYMPTOMS).document(symptom_id)
-    # if not doc_ref.exists():
-    #     return {"error": "disability does not exist"}
-
-    symptom = doc_ref.get().to_dict()
-
+    doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id), (SYMPTOMS, symptom_id)])
+    if doc_ref[0] is False:
+        return doc_ref[1]
+    symptom = doc_ref[1].get().to_dict()
     if name is not None:
         symptom["name"] = name
     if description is not None:
@@ -256,12 +246,11 @@ def delete_symptom(user_id: str, disability_id: str, symptom_id: str):
     """
     Deletes the syptom from the disability
     """
-    user = db.collection(USERS).document(user_id)
-    if user == {"error": "user does not exist"}:
-        return {"error": "user does not exist"}
 
-    doc_ref = user.collection(DISABILITIES).document(disability_id).collection(SYMPTOMS).document(symptom_id)
-    doc_ref.delete()
+    doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id), (SYMPTOMS, symptom_id)])
+    if doc_ref[0] is False:
+        return doc_ref[1]
+    doc_ref[1].delete()
     return {"success": f"deleted {disability_id}"}
 
 
