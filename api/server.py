@@ -168,6 +168,8 @@ def get_disabilities(user_id: str):
     disability_ref = result[1].collection(DISABILITIES)
     for disability in disability_ref.stream():
         disabilities[disability.id] = disability_ref.document(disability.id).get().to_dict()
+        disabilities[disability.id][SYMPTOMS] = get_symptoms(user_id, disability.id)
+        disabilities[disability.id][ACCOMMODATIONS] = get_accommodations(user_id, disability.id)
 
     return disabilities
 
@@ -374,9 +376,9 @@ def get_profile(user_id: str):
     
     user = doc_ref[1].get().to_dict()
     if user["publicprofile"] is True: #return all info
-        return {"user": get_user(user_id)}
+        return {"user": get_user(user_id), DISABILITIES: get_disabilities(user_id), TESTIMONIALS: get_testimonials(user_id)}
     else: # return name
-        pass
+        return {"user": get_user(user_id)["name"]}
 
 
 def generate_uuid_from_ref(ref):
