@@ -82,7 +82,7 @@ def create_user(name: str, language: str):
 
     # Add user and populate with starter data
     doc_ref = ref.document(uuid)
-    doc_ref.set({"uuid": uuid, "name": name, "language": language, "location": None, "photo": None, "lastexport": None})
+    doc_ref.set({"uuid": uuid, "name": name, "language": language, "location": None, "photo": None, "lastexport": None, "publicprofile": False})
     
     # Return UUID
     return uuid
@@ -106,9 +106,8 @@ def get_user(uuid: str):
     user.pop("uuid")
     return user
 
-
 @app.put("/user")
-def update_user(uuid: str, name: str = None, language: str = None, location: str = None, lastexport: str = None):
+def update_user(uuid: str, name: str = None, language: str = None, location: str = None, lastexport: str = None, publicprofile: bool = None):
     """
     Update user attributes besides disabilities
     """
@@ -126,9 +125,20 @@ def update_user(uuid: str, name: str = None, language: str = None, location: str
         user["location"] = location
     if lastexport is not None:
         user["lastexport"] = lastexport
+    if publicprofile is not None:
+        user["publicprofile"] = publicprofile
 
     doc_ref = result[1]
     doc_ref.set(user)
+
+@app.delete("/user")
+def delete_user(user_id: str):
+    doc_ref = get_doc([(USERS, user_id)])
+    if doc_ref[0] is False:
+        return doc_ref[1]
+    
+    doc_ref[1].delete()
+    return {"success": f"deleted user {user_id}"}
 
 #Disabilities
 @app.post("/disability")
@@ -162,7 +172,7 @@ def get_disabilities(user_id: str):
     return disabilities
 
 @app.put("/disability")
-def update_disabilites(user_id: str, disability_id: str, name: str = None, description: str = None, extrainfo: str = None):
+def update_disability(user_id: str, disability_id: str, name: str = None, description: str = None, extrainfo: str = None):
     """
     Updates disability of the specified user.
     """
@@ -190,7 +200,7 @@ def delete_disability(user_id: str, disability_id: str):
         return doc_ref[1]
     
     doc_ref[1].delete()
-    return {"success": f"deleted {disability_id}"}
+    return {"success": f"deleted disability {disability_id}"}
 
 
 #Symptoms
@@ -199,10 +209,8 @@ def add_symptom(user_id: str, disability_id: str, symptom_id: str, name: str, de
     """
     Adds a new symptom to the specified user and disability.
     """
-    # Add disability and populate with specified data
 
-
-    doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)]) #user.collection(DISABILITIES).document(disability_id).collection(SYMPTOMS).document(symptom_id)
+    doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)]) 
     if doc_ref[0] is False:
         return doc_ref[1]
     doc_ref = doc_ref[1].collection(SYMPTOMS).document(symptom_id)
@@ -211,7 +219,7 @@ def add_symptom(user_id: str, disability_id: str, symptom_id: str, name: str, de
     return symptom_id
 
 @app.get("/symptom")
-def get_symptom(user_id: str, disability_id: str):
+def get_symptoms(user_id: str, disability_id: str):
     """
     Gets all of the symptom of the specified user and disability.
     """
@@ -252,7 +260,7 @@ def delete_symptom(user_id: str, disability_id: str, symptom_id: str):
     if doc_ref[0] is False:
         return doc_ref[1]
     doc_ref[1].delete()
-    return {"success": f"deleted {disability_id}"}
+    return {"success": f"deleted symptom {symptom_id}"}
 
 
 #Accommodation
@@ -271,7 +279,7 @@ def add_accommodation(user_id: str, disability_id: str, accommodation_id: str, n
     return accommodation_id
 
 @app.get("/accommodation")
-def get_accommodation(user_id: str, disability_id: str):
+def get_accommodations(user_id: str, disability_id: str):
     """
     Gets all of the symptom of the specified user and disability.
     """
@@ -287,7 +295,7 @@ def get_accommodation(user_id: str, disability_id: str):
     return accommodations
 
 @app.put("/accommodation")
-def update_symptom(user_id: str, disability_id: str, accommodation_id:str, name: str = None, description: str = None):
+def update_accommodations(user_id: str, disability_id: str, accommodation_id:str, name: str = None, description: str = None):
     """
     Updates disability of the specified user.
     """
@@ -312,9 +320,10 @@ def delete_accommodation(user_id: str, disability_id: str, accommodation_id: str
     if doc_ref[0] is False:
         return doc_ref[1]
     doc_ref[1].delete()
-    return {"success": f"deleted {disability_id}"}
+    return {"success": f"deleted accommodation {accommodation_id}"}
 
 
+#Testimonials
 def get_testimonial_id(user_id: str):
     """
     Returns the next largest number since testimonials will be ordered sequentially
@@ -325,7 +334,6 @@ def get_testimonial_id(user_id: str):
         num = max(int(testimonial.id), num)
     return num + 1
 
-#Testimonials
 @app.post("/testimonial")
 def add_testimonial(user_to_id: str, from_name: str, description: str, relationship: str): # date?
         doc_ref = get_doc([(USERS, user_to_id)])
@@ -338,7 +346,7 @@ def add_testimonial(user_to_id: str, from_name: str, description: str, relations
         doc_ref.set({"id": testimonial_id, "fromname": from_name, "description": description, "relationship": relationship})
 
 @app.get("/testimonial")
-def get_testimonial(user_id: str):
+def get_testimonials(user_id: str):
     testimonials = dict()
     doc_ref = get_doc([(USERS, user_id)])
     if doc_ref[0] is False:
@@ -350,8 +358,25 @@ def get_testimonial(user_id: str):
 
     return testimonials
 
+@app.delete("/testimonial")
+def delete_testimonial(user_id: str, testimonial_id: str):
+    doc_ref = get_doc([(USERS, user_id), (TESTIMONIALS, testimonial_id)])
+    if doc_ref[0] is False:
+        return doc_ref[1]
+    doc_ref[1].delete()
+    return {"success": f"deleted testimonial {testimonial_id}"}
+
+@app.get("/profile")
 def get_profile(user_id: str):
-    pass
+    doc_ref = get_doc([(USERS, user_id)])
+    if doc_ref[0] is False:
+        return doc_ref[1]
+    
+    user = doc_ref[1].get().to_dict()
+    if user["publicprofile"] is True: #return all info
+        return {"user": get_user(user_id)}
+    else: # return name
+        pass
 
 
 def generate_uuid_from_ref(ref):
@@ -397,8 +422,8 @@ def check_auth(id_token: Annotated[str | None, Header()] = None):
 
 
 
-@app.get('/profile')
-def profile(Id_Token: Annotated[str | None, Header()] = None):
-    uid = decode_token(Id_Token)
-    return {'name': uid, 'disabilities': [], 'testimonials': []}
+# @app.get('/profile')
+# def profile(Id_Token: Annotated[str | None, Header()] = None):
+#     uid = decode_token(Id_Token)
+#     return {'name': uid, 'disabilities': [], 'testimonials': []}
 
