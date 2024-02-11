@@ -5,7 +5,6 @@ from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 
 import firebase_admin
-from data_classes import Symptom, Accommodation, User
 from firebase_admin import firestore, auth, credentials
 
 import secrets
@@ -73,21 +72,21 @@ def get_doc(input: [(str, str)]):
     return (True, doc)
 
 
-@app.post("/user")
-def create_user(name: str, language: str):
-    """
-    Creates a new user in the Firestore database.
-    """
-    # Generate UUID
-    ref = db.collection(USERS)
-    uuid = generate_uuid_from_ref(ref)
+# @app.post("/user")
+# def create_user(name: str, language: str):
+#     """
+#     Creates a new user in the Firestore database.
+#     """
+#     # Generate UUID
+#     ref = db.collection(USERS)
+#     uuid = generate_uuid_from_ref(ref)
 
-    # Add user and populate with starter data
-    doc_ref = ref.document(uuid)
-    doc_ref.set({"uuid": uuid, "name": name, "language": language, "location": None, "photo": None, "lastexport": None, "publicprofile": False})
+#     # Add user and populate with starter data
+#     doc_ref = ref.document(uuid)
+#     doc_ref.set({"uuid": uuid, "name": name, "language": language, "location": None, "photo": None, "lastexport": None, "publicprofile": False})
     
-    # Return UUID
-    return uuid
+#     # Return UUID
+#     return uuid
 
 # def get_user(Id_Token: Annotated[str | None, Header()] = None):
 #     uid = decode_token(Id_Token)
@@ -382,8 +381,12 @@ def delete_testimonial(user_id: str, testimonial_id: str):
     doc_ref[1].delete()
     return {"success": f"deleted testimonial {testimonial_id}"}
 
+
+# def get_user(Id_Token: Annotated[str | None, Header()] = None):
+#     uid = decode_token(Id_Token)
 @app.get("/profile")
-def get_profile(user_id: str):
+def get_profile(Id_Token: Annotated[str | None, Header()] = None):
+    user_id = decode_token(Id_Token)
     doc_ref = get_doc([(USERS, user_id)])
     if doc_ref[0] is False:
         return doc_ref[1]
@@ -420,8 +423,12 @@ def login(id_token):
     Logs in a user given their UUID.
     """
     decoded_token = auth.verify_id_token(id_token)
-    uid = decoded_token['uid']
-    return uid
+    uuid = decoded_token['uid']
+    #     ref = db.collection(USERS)
+
+    doc_ref = db.collection(USERS).document(uuid)
+    doc_ref.set({"uuid": uuid, "name": "", "language": "", "location": None, "photo": None, "lastexport": None, "publicprofile": False})
+    return uuid
 
 @app.get('/login')
 def login_endpoint(id_token: str):
