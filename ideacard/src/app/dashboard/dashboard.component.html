@@ -1,4 +1,65 @@
-<p>dashboard works!</p>
-<div>
-    {{ currentUser?.name }}Hi
+<div class="page">
+    <div *ngIf="currentUser.exists == null; else userLoaded">
+
+    </div>
+    <ng-template #userLoaded>
+        <div *ngIf="currentUser.exists == false; else userExists">
+            <div class="notLoggedIn">Not Logged In</div>
+        </div>
+        <ng-template #userExists>
+            <div *ngIf="currentUser.exists == true && currentUser.disabilities.length == 0; else defaultBlock" >
+                <div class="noDisabilities">No Disabilities</div>
+            </div>
+            <ng-template #defaultBlock>
+                <div class="user-header">
+                    <div class="user-welcome">Hi, {{currentUser.name}}!</div>
+                    <div class="header-buttons">
+                        <div class="edit-button button dark-button">Edit</div>
+                        <div class="export-button button dark-button">Export</div>
+                    </div>
+                </div>
+                <ng-template ngFor let-item [ngForOf]="currentUser.disabilities" let-i="index">
+                    <div class="disability-card">
+                        <div class="card-name">{{currentUser.disabilities[i].name}}</div>
+                        <div class="symptoms">
+                            <ul class="header-list">
+                                <li class="card-header">
+                                    Symptoms
+                                </li>
+                            </ul>
+                            <ul class="item-list">
+                                <div *ngIf="currentUser.disabilities[i].symptoms.length == 0; else symptomsList">
+                                    <li>None</li>
+                                </div>
+                                <ng-template #symptomsList>
+                                    <li *ngFor="let symptom of currentUser.disabilities[i].symptoms">{{symptom.name}}</li>
+                                </ng-template>
+                            </ul>
+                        </div>
+                        <div class="accommodations">
+                            <ul class="header-list">
+                                <li class="card-header">
+                                    Accommodations
+                                </li>
+                            </ul>
+                            <ul class="item-list">
+                                <div *ngIf="currentUser.disabilities[i].accommodations.length == 0; else accommodationsList">
+                                    <li>None</li>
+                                </div>
+                                <ng-template #accommodationsList ngFor let-item [ngForOf]="currentUser.disabilities[i].accommodations" let-y="index">
+                                    <li *ngFor="let accommodation of currentUser.disabilities[i].accommodations">{{accommodation.name}}</li>
+                                </ng-template>
+                            </ul>
+                        </div>
+                        <div class="delete button red-button">
+                            <div class="delete-text">Delete</div>
+                            <img src="../../assets/trash-icon.png" class="delete-icon"/>
+                        </div>
+                    </div>
+                </ng-template>
+            </ng-template>
+        </ng-template>
+        
+    </ng-template>
+    
 </div>

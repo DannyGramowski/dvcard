@@ -1,1 +1,41 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+    --blue: rgba(174,201,230,1);;
+    --darkblue: rgba(50,67,95,1);
+    --white: #ffffff;
+    --red: #E46A52;
+
+    --card-shadow: rgba(0, 0, 0, 0.25);
+    --input-shadow: rgba(0.2985130250453949, 0.2985130250453949, 0.2985130250453949, 0.25);
+
+    --light: 300;
+    --medium: 400;
+    --bold: 600;
+    --superbold: 700;
+}
+
+body {
+    margin: 0;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.button {
+    user-select: none;
+    cursor: pointer;
+}
+
+.dark-button {
+    background: var(--darkblue);
+    color: var(--white);
+    font-weight: var(--medium);
+    padding: 1vw 4vw;
+}
+
+.page {
+    margin: 0 calc(16vw - 6vh);
+    font-family: Poppins;
+    font-size: 2vw;
+}

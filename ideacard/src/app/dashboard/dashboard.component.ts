@@ -3,16 +3,17 @@ import { AuthService } from '../services/auth.service';
 import { firebase } from 'firebaseui-angular';
 import { Profile } from '../interfaces/profile';
 import { FirebaseModule } from '../firebase/firebase.module';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [FirebaseModule],
+  imports: [FirebaseModule, CommonModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent {
-  public currentUser: Profile | undefined;
+  public currentUser: Profile = {name: "", exists: false, disabilities: [], testimonials: []};
 
   constructor (private authService: AuthService) {};
 
