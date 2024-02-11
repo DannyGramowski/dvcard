@@ -1,0 +1,8 @@
+add testimonial
+add public profile functionality
+-fetch
+-update
+
+fetch profile dependant on public
+-if private return only name
+
