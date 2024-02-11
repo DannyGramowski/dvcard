@@ -7,6 +7,7 @@ export interface Profile {
     location: string,
     uuid: string,
     publicprofile: boolean,
+    exists: boolean | null,
     disabilities: Disability[],
     testimonials: Testimonial[]
 }

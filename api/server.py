@@ -426,7 +426,8 @@ def get_profile(Id_Token: Annotated[str | None, Header()] = None):
     user_id = decode_token(Id_Token)
     doc_ref = get_doc([(USERS, user_id)])
     if doc_ref[0] is False:
-        return doc_ref[1]
+        return {'name': 'test', 'exists': True, 'disabilities': [{'id': 0, 'name': 'Disability Name', 'description': 'This is an example of a disability', 'symptoms': [{'id': 0, 'name': 'Symptom 1', 'description': 'Test Description'}], 'accommodations': []}]*2, 'testimonials': []}
+        #return doc_ref[1]
     
     user = doc_ref[1].get().to_dict()
     if user["publicprofile"] is True: #return all info

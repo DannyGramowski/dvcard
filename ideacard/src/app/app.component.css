@@ -1,0 +1,49 @@
+
+.header {
+    background: var(--blue);
+    display: flex;
+    margin-bottom: 2vh;
+    height: 10vh;
+    position: sticky;
+    top: 0;
+}
+.logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: calc(10vw + 20vh);
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    background: var(--darkblue);
+}
+.logo > img {
+    height: 100%;
+}
+.links {
+    display: flex;
+    margin-right: 5vw;
+    font-family: Poppins;
+    font-weight: var(--medium);
+    font-size: 2.2vh;
+    justify-content: flex-end;
+    align-items: end;
+    padding-bottom: 2vh;
+    flex-grow: 1;
+
+}
+
+/* Remove this in prod */
+@media (max-width: 600px) {
+    .links {
+        display: none;
+    }
+}
+
+.link {
+    margin-left: 3vw;
+    cursor: pointer;
+}
+
+.link:hover {
+    color: rgb(77, 93, 120);
+}
