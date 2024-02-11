@@ -5,7 +5,7 @@ export interface Profile {
     name: string,
     language: string,
     location: string,
-    uuid: string,
+    user_id: string,
     publicprofile: boolean,
     exists: boolean | null,
     disabilities: Disability[],

@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent {
-  public currentUser: Profile = {name: "", exists: null, disabilities: [], testimonials: []};
+  public currentUser: Profile = {name: "", exists: null, disabilities: [], testimonials: [], language: '', location: '', user_id: '', publicprofile: false};
 
   constructor (private authService: AuthService) {};
 

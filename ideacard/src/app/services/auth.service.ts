@@ -14,7 +14,7 @@ export class AuthService {
   private url: string = "http://127.0.0.1:8000";
 
   private token: string | undefined | null;
-  private profile: Profile = {name: '', exists: null, disabilities: [], testimonials: []};
+  private profile: Profile = {name: '', exists: null, disabilities: [], testimonials: [], language: '', location: '', user_id: '', publicprofile: false};
 
   constructor(
     //private http: HttpClient

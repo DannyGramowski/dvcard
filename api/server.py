@@ -53,6 +53,7 @@ app.add_middleware(
 #     return {"status": True}
 
 def decode_token(id_token):
+    print(len(id_token))
     decoded_token = auth.verify_id_token(id_token)
     uid = decoded_token.get('uid')
     return uid
