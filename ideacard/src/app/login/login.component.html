@@ -1,10 +1,6 @@
-<p>login works!</p>
+<div>
+  <input type="text" id="emailInput" [(ngModel)]="email" placeholder="email" aria-label="email input" />
+  <input type="text" id="passwordInput" [(ngModel)]="password" placeholder="password" aria-label="password input" />
+  <button (click)="submit()">Submit</button>
+</div>
 
-
-<button>
-  Login
-</button>
-<firebase-ui
-  (signInSuccessWithAuthResult)="successCallback($event)"
-  (signInFailure)="errorCallback($event)"
-  (uiShown)="uiShownCallback()"></firebase-ui>
