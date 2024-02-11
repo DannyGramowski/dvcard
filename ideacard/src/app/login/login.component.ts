@@ -31,7 +31,7 @@ export class LoginComponent {
     console.log(firebase.auth().currentUser?.displayName);
     const url = "http://127.0.0.1:8000";
     firebase.auth().currentUser?.getIdToken().then(
-      result => fetch(`${url}/login?id_token=${result}`)
+      result => fetch(`${url}/authcheck?=${result}`)
     ).then (res => res.json()).then (res2 => console.log(res2));
     this.router.navigate(['/dashboard']);
   }

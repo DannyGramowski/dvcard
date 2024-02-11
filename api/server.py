@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 import firebase_admin
 from firebase_admin import firestore, auth, credentials
+from firebase_admin.auth import UserNotFoundError
 
 import secrets
 from typing import Annotated
@@ -41,15 +42,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def test():
-    users_ref = db.collection(USERS)
-    docs = users_ref.stream()
-    # create_user("Joe", "random_account")
+# @app.get("/")
+# def test():
+#     users_ref = db.collection(USERS)
+#     docs = users_ref.stream()
+#     # create_user("Joe", "random_account")
 
-    for doc in docs:
-        print(f"{doc.id} => {doc.to_dict()}")
-    return {"status": True}
+#     for doc in docs:
+#         print(f"{doc.id} => {doc.to_dict()}")
+#     return {"status": True}
 
 def decode_token(id_token):
     decoded_token = auth.verify_id_token(id_token)
@@ -422,7 +423,7 @@ def login(id_token):
     """
     Logs in a user given their UUID.
     """
-    decoded_token = auth.verify_id_token(id_token)
+    decoded_token = auth.verify_id_token(id_token, clock_skew_seconds=2)
     uuid = decoded_token['uid']
     #     ref = db.collection(USERS)
 
@@ -443,6 +444,19 @@ def check_auth(id_token: Annotated[str | None, Header()] = None):
     uid = decoded_token.get('uid')
     return {'result': uid}
 
+def create_user_by_email(email: str, password: str):
+    uuid = generate_uuid_from_ref(db.collection(USERS))
+    auth.create_user(uid=uuid, email=email, password=password)
+
+@app.post('/testauth')
+def test_auth(email: str, password: str):
+    try:
+        user = auth.get_user_by_email(email)
+        print(user)
+    except UserNotFoundError as e:
+        create_user_by_email(email, password)
+    
+    #return session key
 
 
 # @app.get('/profile')
