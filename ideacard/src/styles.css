@@ -3,7 +3,7 @@
     --blue: rgba(174,201,230,1);;
     --darkblue: rgba(50,67,95,1);
     --white: #ffffff;
-    --red: #E46A52;
+    --red: rgb(228, 106, 82);;
 
     --card-shadow: rgba(0, 0, 0, 0.25);
     --input-shadow: rgba(0.2985130250453949, 0.2985130250453949, 0.2985130250453949, 0.25);
@@ -32,6 +32,21 @@ body {
     color: var(--white);
     font-weight: var(--medium);
     padding: 1vw 4vw;
+}
+
+.button.dark-button:hover {
+    background-color: rgb(81, 110, 156);
+}
+
+.red-button {
+    background: var(--red);
+    color: var(--white);
+    font-weight: var(--medium);
+    padding: 1vw 4vw;
+}
+
+.button.red-button:hover {
+    background-color: rgb(255, 136, 112);
 }
 
 .page {

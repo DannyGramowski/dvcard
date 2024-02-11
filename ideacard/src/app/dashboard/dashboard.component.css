@@ -10,6 +10,24 @@
     align-items: end;
 }
 
+.nouser-header {
+    font-weight: var(--superbold);
+    margin-top: 10vh;
+    font-size: calc(2vh + 2vw);
+    margin-bottom: 8vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    font-size: 5vh;
+}
+
+.nouser-header > .button {
+    margin-top: 4vh;
+    font-size: 3vh;
+    border-radius: 2vh;
+}
+
 .header-buttons {
     display: flex;
     justify-content: flex-end;

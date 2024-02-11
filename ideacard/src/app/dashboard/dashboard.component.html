@@ -4,7 +4,10 @@
     </div>
     <ng-template #userLoaded>
         <div *ngIf="currentUser.exists == false; else userExists">
-            <div class="notLoggedIn">Not Logged In</div>
+            <div class="nouser-header">
+                <div class="user-welcome">You must be logged in to view your dashboard.</div>
+                <div class="button dark-button">Log In</div>
+            </div>
         </div>
         <ng-template #userExists>
             <div *ngIf="currentUser.exists == true && currentUser.disabilities.length == 0; else defaultBlock" >

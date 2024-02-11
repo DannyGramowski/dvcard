@@ -3,7 +3,7 @@ import { Testimonial } from "./testimonial";
 
 export interface Profile {
     name: string,
-    exists: boolean | undefined,
+    exists: boolean | null,
     disabilities: Disability[],
     testimonials: Testimonial[]
 }
