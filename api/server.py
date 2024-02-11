@@ -11,6 +11,8 @@ from firebase_admin import firestore, auth, credentials
 import secrets
 from typing import Annotated
 
+from export import export_by_type
+
 USERS = "users"
 DISABILITIES = "disabilities"
 SYMPTOMS = "symptoms"
@@ -264,7 +266,18 @@ def delete_symptom(user_id: str, disability_id: str, symptom_id: str):
     doc_ref.delete()
     return {"success": f"deleted {disability_id}"}
 
+def get_user_or_none(uuid):
+    result = get_doc([(USERS, uuid)])
+    if result[0] is False:
+        return None
+    user = result[1].get().to_dict()
+    return user
 
+def export(uuid: str, ftype: str):
+    user = get_user_or_none(uuid)
+    if not user:
+        return None
+    return export_by_type(user, ftype)
 
 def generate_uuid_from_ref(ref):
     """
