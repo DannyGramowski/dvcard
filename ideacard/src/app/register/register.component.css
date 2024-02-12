@@ -1,0 +1,64 @@
+.fun-image {
+    background-color: grey;
+    height: 100%;
+    width: 50%;
+}
+
+.register {
+    background-color: white;
+    height: 100%;
+    width: 50%;
+    float: right;
+}
+
+.register-page {
+    display: flex;
+    height: 100vh;
+}
+
+.welcome-text {
+    font-weight: var(--superbold);
+    font-size: 36px;
+    color: black;
+}
+
+.form-container {
+    margin-top: 9vh;
+}
+
+input::placeholder {
+    color: rgb(104, 105, 105);
+}
+
+.register-input {
+    color: rgb(104, 105, 105);
+    width: 30em;
+    height: 4em;
+    border-radius: 10px;
+    border-color: rgb(177, 180, 182);
+    border-width: 0px;
+    margin: 1em 0em;
+    box-shadow: 0 0 3px rgb(150, 150, 151);
+    padding-left: 1em;
+}
+
+.language-select {
+    width: 31em;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.disclaimer-text {
+    font-size: 12px;
+    font-weight: var(--light);
+    margin-top: .5em;
+}
+
+.register-button {
+    width: 30em;
+    height: 4em;
+    margin-top: 0.5em;
+    border-radius: 10px;
+    border-width: 0px;
+}
+
