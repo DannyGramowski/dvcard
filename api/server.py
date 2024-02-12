@@ -440,8 +440,21 @@ def get_profile(Id_Token: Annotated[str | None, Header()] = None):
 
     return user
 
-def public_get_profile(uuid: str):
-    pass
+@app.get("/publicprofile")
+def public_get_profile(user_id: str):
+
+    ## TODO update this to be more like get_profile
+    
+    doc_ref = get_doc([(USERS, user_id)])
+    if doc_ref[0] is False:
+        #return {'name': 'test', 'exists': True, 'disabilities': [{'id': 0, 'name': 'Disability Name', 'description': 'This is an example of a disability', 'symptoms': [{'id': 0, 'name': 'Symptom 1', 'description': 'Test Description'}], 'accommodations': []}]*2, 'testimonials': []}
+        return doc_ref[1]
+    
+    user = doc_ref[1].get().to_dict()
+    if user["publicprofile"] is True: #return all info
+        return {"user": get_user(user_id), DISABILITIES: get_disabilities(user_id), TESTIMONIALS: get_testimonials(user_id)}
+    else: # return name
+        return {"user": get_user(user_id)["name"]}
 
 def generate_uuid_from_ref(ref):
     """
