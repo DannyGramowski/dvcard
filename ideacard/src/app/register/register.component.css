@@ -59,5 +59,6 @@ input::placeholder {
     height: 4em;
     margin-top: 0.5em;
     border-radius: 10px;
+    border-width: 0px;
 }
 

@@ -1,22 +1,20 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { FirebaseUISignInSuccessWithAuthResult, FirebaseUISignInFailure } from 'firebaseui-angular';
 import { FirebaseModule } from '../firebase/firebase.module';
 import { firebase } from 'firebaseui-angular';
 import { AuthService } from '../services/auth.service';
 import { FormsModule } from '@angular/forms';
-import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FirebaseModule, FormsModule],
+  imports: [FirebaseModule, FormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  email: string = "";
-  password: string = "";
 
   constructor(
     private router: Router,
@@ -36,19 +34,20 @@ export class LoginComponent {
   }
 
   submit() {
+    let email:string = (<HTMLInputElement>document.getElementById("emailInput"))?.value
+    let password:string = (<HTMLInputElement>document.getElementById("passwordInput"))?.value
     const auth = getAuth()
 
-    createUserWithEmailAndPassword(auth, this.email, this.password)
+    signInWithEmailAndPassword(auth, email, password)
     .then(credentials => {credentials.user.getIdToken().then(result => this.loginUser(result))})
     .catch(error => {
-      if(error.code == "auth/email-already-in-use") { //stfu brandon it works
-        signInWithEmailAndPassword(auth, this.email, this.password)
-        .then(credentials => {credentials.user.getIdToken().then(result => this.loginUser(result))});
-      } else {
         console.log(error);
-      }
     })
     //fetch(`${url}/testauth?email=${this.email}&password=${this.password}`)
+  }
+
+  register() {
+
   }
 }
   

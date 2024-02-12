@@ -24,9 +24,11 @@
 
 .form-container {
     margin-top: 9vh;
+    display: block;
 }
 
 .register-input {
+    display: block;
     color: rgb(104, 105, 105);
     width: 30em;
     height: 4em;
@@ -38,6 +40,15 @@
     padding-left: 1em;
 }
 
+.button-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.input-container {
+    display: block;
+}
+
 .disclaimer-text {
     font-size: 12px;
     font-weight: var(--light);
@@ -45,9 +56,10 @@
 }
 
 .register-button {
-    width: 30em;
+    width: 14em;
     height: 4em;
     margin-top: 0.5em;
     border-radius: 10px;
+    border-width: 0px;
 }
 
