@@ -42,11 +42,19 @@
     margin-left: 2vw;
 }
 
+.no-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: calc(1vw + 2vh);
+}
+
 .begin-button {
     width: min-content;
     border-radius: 1vh;
     padding: 1vh 8vh;
     font-size: 3vh;
+    margin-top: 4vh;
 }
 
 .disability-card {

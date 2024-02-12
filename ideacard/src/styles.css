@@ -3,7 +3,8 @@
     --blue: rgba(174,201,230,1);;
     --darkblue: rgba(50,67,95,1);
     --white: #ffffff;
-    --red: rgb(228, 106, 82);;
+    --red: rgb(228, 106, 82);
+    --lightblue: #EBF1F9;  /* Only use for very light elements */
 
     --card-shadow: rgba(0, 0, 0, 0.25);
     --input-shadow: rgba(0.2985130250453949, 0.2985130250453949, 0.2985130250453949, 0.25);
@@ -19,7 +20,7 @@ body {
 }
 
 ::-webkit-scrollbar {
-    display: none;
+    /* display: none; */
 }
 
 .button {
