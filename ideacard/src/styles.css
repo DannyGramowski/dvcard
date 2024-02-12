@@ -34,7 +34,7 @@ body {
     padding: 1vw 4vw;
 }
 
-.button.dark-button:hover {
+button.dark-button:hover {
     background-color: rgb(81, 110, 156);
 }
 
@@ -53,4 +53,10 @@ body {
     margin: 0 calc(16vw - 6vh);
     font-family: Poppins;
     font-size: 2vw;
+}
+
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

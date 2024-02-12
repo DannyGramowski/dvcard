@@ -2,7 +2,6 @@
 .header {
     background: var(--blue);
     display: flex;
-    margin-bottom: 2vh;
     height: 10vh;
     position: sticky;
     top: 0;
