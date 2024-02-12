@@ -13,14 +13,6 @@ import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } f
 export class RegisterComponent {
   url:string = "http://127.0.0.1:8000";
 
-
-  loginUser(authToken: string) : void{
-    console.log(authToken);
-    let headers = new Headers();
-    headers.set('Id-Token', authToken);
-
-  }
-
   register() {
     let name:string = (<HTMLInputElement>document.getElementById("nameInput"))?.value
     let email:string = (<HTMLInputElement>document.getElementById("emailInput"))?.value
@@ -41,7 +33,6 @@ export class RegisterComponent {
     .then(credentials => {
       credentials.user.getIdToken()
       .then(result => {
-        this.loginUser(result) 
         let headers = new Headers();
         headers.set('Id-Token', result)
         headers.set("Content-Type", 'application/json')
