@@ -60,6 +60,7 @@ input:focus{
     padding-left: 2vw;
     min-height: 3vw;
     user-select: none;
+    cursor: pointer;
 }
 
 .selected-category {
@@ -83,4 +84,43 @@ input:focus{
     height: 50vh;
     overflow-y: scroll;
     overflow-x: none;
+}
+
+.disabilities {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: 2vw;
+}
+
+.disability {
+    width: calc(5vw + 20vh);
+    height: calc(5vw + 20vh);
+    border: 2px solid var(--darkblue);
+    border-radius: 10px;
+    box-shadow: 0px 0px 4px var(--input-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 1vw;
+    margin-top: 1vw;
+    user-select: none;
+    cursor: pointer;
+}
+
+.disability > span {
+    width: min-content;
+    height: min-content;
+    text-align: center;
+    font-size: calc(2vh + 0.5vw);
+}
+
+.popup {
+    position: fixed;
+    height: 70vh;
+    width: 80vw;
+    bottom: 10vh;
+    left: 10vw;
+    background-color: white;
+    border: 2px solid var(--darkblue);
+    border-radius: 10px;
 }

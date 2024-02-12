@@ -3,20 +3,27 @@
         <div class="header-text">Select</div>
         <div class="search-bar">
             <img src="../../assets/search-icon.png" class="search-icon"/>
-            <input class="search-text"/>
+            <input class="search-text" (keyup)="onSearch($event)"/>
         </div>
     </div>
     <div class="selection">
         <div class="left-bar">
             <div class="categories">
-                <div *ngFor="let category of categories; index as i" (click)="selectCategory(category, i)" id="category{{i}}" class="category">{{category}}</div>
+                <div *ngFor="let category of getCategories(); index as i" (click)="selectCategory(category, i)" id="category{{i}}" class="category">{{category.name}}</div>
             </div>
             <div class="added">
     
             </div>
         </div>
         <div class="right-bar">
-    
+            <div class="disabilities">
+                <div *ngFor="let disability of getDisabilities(); index as i; trackby trackSearch" (click)="inspectDisability(disability, i)" id="disability{{i}}" class="disability">
+                    <span>{{disability.name}}</span>
+                </div>
+            </div>
         </div>
+    </div>
+    <div *ngIf="inspected" class="popup">
+        
     </div>
 </div>
