@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+//import {MatSnackBar} from '@angular/material/snack-bar';
 
 
 @Component({
@@ -31,6 +32,7 @@ export class RegisterComponent {
     const auth = getAuth()
 
     if(password !== reenterpassword) {
+      //openSnackBar()
       console.log("passwords not equal");
       return
     }
