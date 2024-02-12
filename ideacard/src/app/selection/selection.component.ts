@@ -20,6 +20,8 @@ export class SelectionComponent {
 
   searchValue: string = "";
 
+  searchResults: Disability[] = [];
+
   inspected: Disability | null = null;
 
   constructor (private disabilityInfo: DisabilityInfoService) {}
@@ -45,7 +47,7 @@ export class SelectionComponent {
     let disabilities = this.disabilityInfo.getDisabilities();
     disabilities = disabilities.filter((d) => d.name.toLowerCase().includes(this.searchValue.toLowerCase()));
     console.log('test');
-    return disabilities;
+    this.searchResults = disabilities;
   }
 
   trackSearch (index: number, disability: Disability) {
@@ -59,5 +61,6 @@ export class SelectionComponent {
 
   onSearch(event: Event) {
     this.searchValue = (event.target as HTMLTextAreaElement).value;
+    this.getDisabilities();
   }
 }
