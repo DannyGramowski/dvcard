@@ -29,6 +29,7 @@ export class LoginComponent {
 
   loginUser(authToken: string) : void{
     const url = "http://127.0.0.1:8000";
+    console.log(authToken);
     let headers = new Headers();
     headers.set('Id-Token', authToken);
     fetch(`${url}/login`, {headers: headers})

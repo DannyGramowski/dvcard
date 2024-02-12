@@ -53,7 +53,6 @@ app.add_middleware(
 #     return {"status": True}
 
 def decode_token(id_token):
-    print(len(id_token))
     decoded_token = auth.verify_id_token(id_token)
     uid = decoded_token.get('uid')
     return uid
@@ -174,15 +173,18 @@ def get_disabilities(id_token: Annotated[str | None, Header()] = None):
     """
     decoded_token = auth.verify_id_token(id_token)
     user_id = decoded_token['uid']
-    disabilities = dict()
-    result = get_doc([(USERS, user_id)])
+    return get_disabilities_by_uid(user_id)
+    
+def get_disabilities_by_uid(uid: str):
+    result = get_doc([(USERS, uid)])
     if result[0] is False:
         return result[1]
     disability_ref = result[1].collection(DISABILITIES)
-    for disability in disability_ref.stream():
-        disabilities[disability.id] = disability_ref.document(disability.id).get().to_dict()
-        disabilities[disability.id][SYMPTOMS] = get_symptoms(user_id, disability.id)
-        disabilities[disability.id][ACCOMMODATIONS] = get_accommodations(user_id, disability.id)
+    disabilities = []
+    for i, disability in enumerate(disability_ref.stream()):
+        disabilities[i] = disability_ref.document(disability.id).get().to_dict()
+        disabilities[i][SYMPTOMS] = get_symptoms(uid, disability.id)
+        disabilities[i][ACCOMMODATIONS] = get_accommodations(uid, disability.id)
 
     return disabilities
 
@@ -398,14 +400,17 @@ def add_testimonial(from_name: str, description: str, relationship: str, id_toke
 def get_testimonials(id_token: Annotated[str | None, Header()] = None):
     decoded_token = auth.verify_id_token(id_token)
     user_id = decoded_token['uid']    
-    testimonials = dict()
-    doc_ref = get_doc([(USERS, user_id)])
+    return get_testimonials_by_uid(user_id)
+
+def get_testimonials_by_uid(uid: str):
+    testimonials = []
+    doc_ref = get_doc([(USERS, uid)])
     if doc_ref[0] is False:
         return doc_ref[1]
     
     testimonial_ref = doc_ref[1].collection(TESTIMONIALS)
-    for testimonial in testimonial_ref.stream():
-        testimonials[testimonial.id] = testimonial_ref.document(testimonial.id).get().to_dict()
+    for i, testimonial in enumerate(testimonial_ref.stream()):
+        testimonials[i] = testimonial_ref.document(testimonial.id).get().to_dict()
 
     return testimonials
 
@@ -430,11 +435,10 @@ def get_profile(Id_Token: Annotated[str | None, Header()] = None):
         return {'name': 'test', 'exists': True, 'disabilities': [{'id': 0, 'name': 'Disability Name', 'description': 'This is an example of a disability', 'symptoms': [{'id': 0, 'name': 'Symptom 1', 'description': 'Test Description'}], 'accommodations': []}]*2, 'testimonials': []}
         #return doc_ref[1]
     
-    user = doc_ref[1].get().to_dict()
-    if user["publicprofile"] is True: #return all info
-        return {"user": get_user(user_id), DISABILITIES: get_disabilities(user_id), TESTIMONIALS: get_testimonials(user_id)}
-    else: # return name
-        return {"user": get_user(user_id)["name"]}
+    user = get_user_or_none(user_id)
+    user.update({'disabilities': get_disabilities_by_uid(user_id), 'testimonials': get_testimonials_by_uid(user_id)})
+
+    return user
 
 def public_get_profile(uuid: str):
     pass
@@ -460,11 +464,12 @@ def generate_uuid_from_ref(ref):
     return uuid
 
 @app.get('/login')
-def login(id_token: Annotated[str | None, Header()] = None):
+def login(Id_Token: Annotated[str | None, Header()] = None):
     """
     Logs in a user given their UUID.
     """
-    decoded_token = auth.verify_id_token(id_token)
+    print(Id_Token)
+    decoded_token = auth.verify_id_token(Id_Token)
     user_id = decoded_token['uid']
     print("uuid", user_id)
     col_ref = db.collection(USERS)

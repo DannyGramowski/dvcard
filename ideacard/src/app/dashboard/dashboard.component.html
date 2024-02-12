@@ -11,11 +11,24 @@
         </div>
         <ng-template #userExists>
             <div *ngIf="currentUser.exists == true && currentUser.disabilities.length == 0; else defaultBlock" >
-                <div class="noDisabilities">No Disabilities</div>
+                <div class="user-header">
+                    <div *ngIf="currentUser.name; else noName" class="user-welcome">Hi, {{currentUser.name}}!</div>
+                    <ng-template #noName>
+                        <div class="user-welcome">Hi, New User!</div>
+                    </ng-template>
+                </div>
+                <div class="no-info">
+                    <div>You haven't entered any disabilities yet. Create your profile here.</div>
+                    <div class="begin-button button dark-button">Begin</div>
+                </div>
+                
             </div>
             <ng-template #defaultBlock>
                 <div class="user-header">
-                    <div class="user-welcome">Hi, {{currentUser.name}}!</div>
+                    <div *ngIf="currentUser.name; else noName" class="user-welcome">Hi, {{currentUser.name}}!</div>
+                    <ng-template #noName>
+                        <div class="user-welcome">Hi, New User!</div>
+                    </ng-template>
                     <div class="header-buttons">
                         <div class="edit-button button dark-button">Edit</div>
                         <div class="export-button button dark-button">Export</div>
