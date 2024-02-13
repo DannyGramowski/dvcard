@@ -1,0 +1,42 @@
+.parent {
+
+}
+
+.testimonial-header {
+    font-size: calc(2vw + 4vh);
+    font-weight: var(--bold);
+}
+
+.link-text {
+    font-size: calc(1vw + 1vh);
+
+}
+
+
+.testimonials {
+    width: 80vw;
+    display: grid;
+    gap: 5vw;
+    grid-template-columns: repeat(auto-fit, max(300px, 25vw));    
+}
+.testimonial {
+    display: inline;
+    /* width: 250px; */
+    width: max(300px, 25vw);
+    height: 200px;
+    margin: 2vh 2vw;
+    font: poppins;
+    border-radius: 10px;
+    border-width: 0px;
+    box-shadow: 0 0 5px rgb(177, 177, 180);
+    padding: 10px;
+}
+
+.testimonial-text {
+    font-size: 15px;
+}
+
+.testimonial-bold {
+    font-weight: var(--bold);
+    font-size: 18px;
+}
