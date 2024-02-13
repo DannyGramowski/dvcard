@@ -1,6 +1,23 @@
-<div>
-  <input type="text" id="emailInput" [(ngModel)]="email" placeholder="email" aria-label="email input" />
-  <input type="text" id="passwordInput" [(ngModel)]="password" placeholder="password" aria-label="password input" />
-  <button (click)="submit()">Submit</button>
-</div>
+<div class="register-page">
 
+  <div class="fun-image">
+      
+  </div> 
+  
+  <div class="page register">
+      <div class="center">
+          <div class="form-container">
+              <div class="welcome-text">Sign into your account</div>
+              
+                <input id="emailInput" type="text" class="register-input" placeholder="Email" aria-label="name input text">
+                <input id="passwordInput" type="text" class="register-input" placeholder="Password" aria-label="name input text">
+          
+              <div class="disclaimer-text"><em>Disclaimer: This is NOT HPAA protected.</em></div>
+              <div class="button-container">
+                <button class="dark-button register-button" (click)="submit()">Login</button>
+                <button routerLink="/register" class="dark-button register-button">Register</button>
+              </div>
+          </div>
+        </div>
+    </div>
+</div>

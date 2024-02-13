@@ -35,19 +35,24 @@ class Disabilities(BaseModel):
         self.extra_info = extra_info
 
 class User(BaseModel):
-    id: str
-    name: str
-    language: str
-    location: str
+    id: str | None = None
+    name: str | None = None
+    language: str | None = None
+    location: str | None = None
+    accommodations: list[Accommodation] | None = None
+    symptoms: list[Symptom] | None = None
+    extrainfo: str | None = None
+    publicprofile: bool | None = None
+    lastexport: str | None = None
 
-    def __init__(self, id, name, language="EN", location="US", accommodations=None, symptoms=None, extra_info=""):
-        self.id = id
-        self.name = name
-        self.language = language
-        self.location = location
-        self.accommodations = accommodations
-        self.symptoms = symptoms
-        self.extra_info = extra_info
+    # def __init__(self, id, name, language="EN", location="US", accommodations=None, symptoms=None, extrainfo=""):
+    #     self.id = id
+    #     self.name = name
+    #     self.language = language
+    #     self.location = location
+    #     self.accommodations = accommodations
+    #     self.symptoms = symptoms
+    #     self.extrainfo = extrainfo
 
 
 class Testimonial(BaseModel):

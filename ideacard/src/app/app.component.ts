@@ -4,12 +4,13 @@ import { FirebaseModule } from './firebase/firebase.module';
 import { FirebaseUISignInFailure, FirebaseUISignInSuccessWithAuthResult } from 'firebaseui-angular';
 import { AuthService } from './services/auth.service';
 import { firebase } from 'firebaseui-angular';
+import { PopupComponent } from './popup/popup.component';
 import environment from '../environments/environment';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, FirebaseModule],
+  imports: [RouterOutlet, PopupComponent, RouterLink, RouterLinkActive, FirebaseModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

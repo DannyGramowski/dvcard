@@ -7,6 +7,9 @@ from fastapi.middleware.cors import CORSMiddleware
 import firebase_admin
 from firebase_admin import firestore, auth, credentials
 from firebase_admin.auth import UserNotFoundError
+from pydantic import BaseModel
+
+from data_classes import User
 
 import secrets
 from typing import Annotated
@@ -111,30 +114,35 @@ def get_user(id_token: Annotated[str | None, Header()] = None):
     return user
 
 @app.put("/user")
-def update_user(name: str = None, language: str = None, location: str = None, lastexport: str = None, publicprofile: bool = None, id_token: Annotated[str | None, Header()] = None):
+def update_user(userBody: User, id_token: Annotated[str | None, Header()] = None):
     """
     Update user attributes besides disabilities
     """
+    print(userBody)
     decoded_token = auth.verify_id_token(id_token)
     user_id = decoded_token['uid']
     result = get_doc([(USERS, user_id)])
     if result[0] is False:
+        print('user doesnt exist')
         return result[1]
     user = result[1].get().to_dict()
     
+    print(userBody.name)
     user["uuid"] = user_id
-    if name is not None:
-        user["name"] = name
-    if language is not None:
-        user["language"] = language
-    if location is not None:
-        user["location"] = location
-    if lastexport is not None:
-        user["lastexport"] = lastexport
-    if publicprofile is not None:
-        user["publicprofile"] = publicprofile
+    if userBody.name is not None:
+        print("set name")
+        user["name"] = userBody.name
+    if userBody.language is not None:
+        user["language"] = userBody.language
+    if userBody.location is not None:
+        user["location"] = userBody.location
+    if userBody.lastexport is not None:
+        user["lastexport"] = userBody.lastexport
+    if userBody.publicprofile is not None:
+        user["publicprofile"] = userBody.publicprofile
 
     doc_ref = result[1]
+    print("set user", user)
     doc_ref.set(user)
 
 @app.delete("/user")
