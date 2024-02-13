@@ -9,18 +9,23 @@
     <div class="selection">
         <div class="left-bar">
             <div class="categories">
-                <div *ngFor="let category of getCategories(); index as i" (click)="selectCategory(category, i)" id="category{{i}}" class="category">{{category.name}}</div>
+                <div *ngFor="let category of categories; index as i" (click)="selectCategory(category, i)" id="category{{i}}" class="category">{{category.name}}</div>
             </div>
             <div class="added">
     
             </div>
         </div>
         <div class="right-bar">
-            <div class="disabilities">
-                <div *ngFor="let disability of getDisabilities(); index as i; trackby trackSearch" (click)="inspectDisability(disability, i)" id="disability{{i}}" class="disability">
+            <div *ngIf="searchResults.length > 0; else noResults" class="disabilities">
+                <div *ngFor="let disability of searchResults; index as i; trackby trackSearch" (click)="inspectDisability(disability, i)" id="disability{{i}}" class="disability">
                     <span>{{disability.name}}</span>
                 </div>
             </div>
+            <ng-template #noResults>
+                <div class="no-results">
+                    No disabilities found.
+                </div>
+            </ng-template>
         </div>
     </div>
     <div *ngIf="inspected" class="popup">

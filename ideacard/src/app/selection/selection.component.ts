@@ -20,11 +20,12 @@ export class SelectionComponent {
 
   searchValue: string = "";
 
+  categories: Category[] = this.disabilityInfo.getCategories();
   searchResults: Disability[] = [];
 
   inspected: Disability | null = null;
 
-  constructor (private disabilityInfo: DisabilityInfoService) {}
+  constructor (private disabilityInfo: DisabilityInfoService) { this.getDisabilities(); }
 
   selectCategory(category: Category, i: number) {
     console.log(category);
@@ -36,10 +37,6 @@ export class SelectionComponent {
     document.getElementById(`category${this.selectedCategory}`)?.classList.remove('selected-category');
     document.getElementById(`category${i}`)?.classList.add('selected-category');
     this.selectedCategory = i;
-  }
-
-  getCategories() {
-    return this.disabilityInfo.getCategories();
   }
 
   getDisabilities() {
