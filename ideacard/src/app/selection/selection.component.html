@@ -11,13 +11,27 @@
             <div class="categories">
                 <div *ngFor="let category of categories; index as i" (click)="selectCategory(category, i)" id="category{{i}}" class="category">{{category.name}}</div>
             </div>
+            <div class="v-bar"></div>
             <div class="added">
-    
+                <div *ngIf="selectedDisabilities.length > 0; else noSelected" class="added-cards">
+                    <div (click)="continue()" class="submit-selected">
+                        Continue to fill in your info >
+                    </div>
+                    <div *ngFor="let selected of selectedDisabilities; index as i" id="selected-disability{{i}}" class="selected-disability">
+                        <div class="selected-text">{{selected.name}}</div>
+                        <div (click)="removeSelected(selected.name)" class="remove-selected">
+                            <img src="../../assets/trash-icon.png"/>
+                        </div>
+                    </div> 
+                </div>
+                <ng-template #noSelected>
+                    <div class="no-selected">No Disabilities Selected</div>
+                </ng-template>
             </div>
         </div>
         <div class="right-bar">
             <div *ngIf="searchResults.length > 0; else noResults" class="disabilities">
-                <div *ngFor="let disability of searchResults; index as i; trackby trackSearch" (click)="inspectDisability(disability, i)" id="disability{{i}}" class="disability">
+                <div *ngFor="let disability of searchResults; index as i" (click)="inspectDisability(disability, i)" id="disability{{i}}" class="disability">
                     <span>{{disability.name}}</span>
                 </div>
             </div>
@@ -29,8 +43,53 @@
         </div>
     </div>
     <div *ngIf="inspected" class="popup">
-        <div class="close-popup">
-            X
+        <div class="popup-flow">
+            <div class="popup-main">
+                <div class="popup-header">
+                    DISABILITY
+                </div>
+                <div class="popup-box">
+                    {{inspected.name}}
+                </div>
+                <div class="popup-header">
+                    INFO
+                </div>
+                <div class="popup-box popup-info">
+                    {{inspected.description}}
+                </div>
+                <div class="popup-header">
+                    SYMPTOMS
+                </div>
+                <div class="popup-box symptom-box">
+                    <div *ngFor="let symptom of inspected.symptoms; index as i" class="popup-symptom">
+                        <li>{{symptom.name}}</li>
+                    </div>
+                </div>
+            </div>
+            <div class="popup-buttons">
+                <div (click)="closePopup()" class="popup-button popup-cancel">
+                    <div class="button-wrapper">
+                        <div>Cancel</div>
+                        <div class="cancel-icon">X</div>
+                    </div>
+                </div>
+                <div (click)="addDisability()" class="popup-button popup-add" [ngClass]="{'greyed-button': isAddGreyed}">
+                    <div *ngIf="!isAddGreyed; else added">
+                        <div class="button-wrapper">
+                            <div>Add</div>
+                            <div class="add-icon">+</div>
+                        </div>
+                    </div>
+                    <ng-template #added>
+                        <div class="button-wrapper">
+                            <div>Added</div>
+                        </div>
+                    </ng-template>
+                </div>
+            </div>
         </div>
+    </div>
+    <div *ngIf="selectedDisabilities.length > 0" (click)="continue()" class="submit-all button darkbutton">
+        <div>Continue ></div>
     </div>
 </div>
