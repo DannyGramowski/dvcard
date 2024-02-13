@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 :root {
-    --blue: rgba(174,201,230,1);;
+    --blue: rgba(174,201,230,1);
     --darkblue: rgba(50,67,95,1);
     --white: #ffffff;
     --red: rgb(228, 106, 82);
@@ -40,6 +40,11 @@ button.dark-button:hover {
     cursor: pointer;
 }
 
+.button.dark-button:hover {
+    background-color: rgb(81, 110, 156);
+    cursor: pointer;
+}
+
 .red-button {
     background: var(--red);
     color: var(--white);
@@ -53,6 +58,7 @@ button.dark-button:hover {
 
 .page {
     margin: 0 calc(16vw - 6vh);
+    margin-top: 2vh;
     font-family: Poppins;
     font-size: 2vw;
 }
