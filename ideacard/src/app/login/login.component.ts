@@ -1,18 +1,21 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { FirebaseUISignInSuccessWithAuthResult, FirebaseUISignInFailure } from 'firebaseui-angular';
 import { FirebaseModule } from '../firebase/firebase.module';
 import { firebase } from 'firebaseui-angular';
 import { AuthService } from '../services/auth.service';
+import { FormsModule } from '@angular/forms';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FirebaseModule],
+  imports: [FirebaseModule, FormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
+
   constructor(
     private router: Router,
     private authService: AuthService
@@ -21,31 +24,58 @@ export class LoginComponent {
   ngOnInit(): void {
     //this.authService.getProfile();
   }
-  
-  successCallback(signInSuccessData: FirebaseUISignInSuccessWithAuthResult) {
-    console.log('success!', signInSuccessData);
-    let uid = signInSuccessData.authResult.user?.uid;
-    if (!uid) {
-      return;
-    }
-    console.log(firebase.auth().currentUser?.displayName);
+
+  loginUser(authToken: string) : void{
     const url = "http://127.0.0.1:8000";
-    firebase.auth().currentUser?.getIdToken().then(
-      result => fetch(`${url}/login?id_token=${result}`)
-    ).then (res => res.json()).then (res2 => console.log(res2));
-    this.router.navigate(['/dashboard']);
+    console.log(authToken);
+    let headers = new Headers();
+    headers.set('Id-Token', authToken);
+    fetch(`${url}/login`, {headers: headers})
   }
 
-  randomFunction() {
-    firebase.auth().currentUser?.getIdToken().then(
-      result => console.log(result));
+  submit() {
+    let email:string = (<HTMLInputElement>document.getElementById("emailInput"))?.value
+    let password:string = (<HTMLInputElement>document.getElementById("passwordInput"))?.value
+    const auth = getAuth()
+
+    signInWithEmailAndPassword(auth, email, password)
+    .then(credentials => {credentials.user.getIdToken().then(result => this.loginUser(result))})
+    .catch(error => {
+        console.log(error);
+    })
+    //fetch(`${url}/testauth?email=${this.email}&password=${this.password}`)
   }
-    
-  errorCallback(errorData: FirebaseUISignInFailure) {
-    console.log('error!', errorData);
-  }
-    
-  uiShownCallback() {
-    console.log('showing!');
+
+  register() {
+
   }
 }
+  
+
+//   successCallback(signInSuccessData: FirebaseUISignInSuccessWithAuthResult) {
+//     console.log('success!', signInSuccessData);
+//     let uid = signInSuccessData.authResult.user?.uid;
+//     if (!uid) {
+//       return;
+//     }
+//     console.log(firebase.auth().currentUser?.displayName);
+//     const url = "http://127.0.0.1:8000";
+//     firebase.auth().currentUser?.getIdToken().then(
+//       result => fetch(`${url}/authcheck?=${result}`)
+//     ).then (res => res.json()).then (res2 => console.log(res2));
+//     this.router.navigate(['/dashboard']);
+//   }
+
+//   randomFunction() {
+//     firebase.auth().currentUser?.getIdToken().then(
+//       result => console.log(result));
+//   }
+    
+//   errorCallback(errorData: FirebaseUISignInFailure) {
+//     console.log('error!', errorData);
+//   }
+    
+//   uiShownCallback() {
+//     console.log('showing!');
+//   }
+// }

@@ -1,0 +1,22 @@
+<div class="main">
+    <div class="header">
+        <div class="header-text">Select</div>
+        <div class="search-bar">
+            <img src="../../assets/search-icon.png" class="search-icon"/>
+            <input class="search-text"/>
+        </div>
+    </div>
+    <div class="selection">
+        <div class="left-bar">
+            <div class="categories">
+                <div *ngFor="let category of categories; index as i" (click)="selectCategory(category, i)" id="category{{i}}" class="category">{{category}}</div>
+            </div>
+            <div class="added">
+    
+            </div>
+        </div>
+        <div class="right-bar">
+    
+        </div>
+    </div>
+</div>

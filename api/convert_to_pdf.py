@@ -14,10 +14,10 @@ from reportlab.lib.pagesizes import letter
 from reportlab.platypus import Paragraph, Frame
 from reportlab.lib.styles import ParagraphStyle
 
-LOGO_FNAME = "api/assets/Sample_logo.png"
+LOGO_FNAME = "assets/Sample_logo.png"
 LOGO_H = 0.4
 LOGO_W = 0.6
-QR_FNAME = "api/assets/Sample_qr.png"
+QR_FNAME = "assets/Sample_qr.png"
 QR_H = 0.6
 QR_W = 0.6
 # TODO make qr variable

@@ -1,2 +1,4 @@
 /api/.env
 api/gcloud_key.json
+ideacard/node_modules
+api/__pycache__/*

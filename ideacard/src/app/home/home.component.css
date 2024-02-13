@@ -1,0 +1,16 @@
+.about {
+    min-height: 60vh;
+}
+
+.getstarted {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+}
+
+.getstarted > .button {
+    font-size: calc(1vw + 2vh);
+    font-weight: var(--bold);
+    border-radius: 1vw;
+}

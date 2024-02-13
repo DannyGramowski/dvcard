@@ -3,18 +3,20 @@ import { AuthService } from '../services/auth.service';
 import { firebase } from 'firebaseui-angular';
 import { Profile } from '../interfaces/profile';
 import { FirebaseModule } from '../firebase/firebase.module';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [FirebaseModule],
+  imports: [FirebaseModule, CommonModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent {
-  public currentUser: Profile | undefined;
+  public currentUser: Profile = {name: "", exists: null, disabilities: [], testimonials: [], language: '', location: '', user_id: '', publicprofile: false};
 
-  constructor (private authService: AuthService) {};
+  constructor (private authService: AuthService, private router: Router) {};
 
   ngAfterContentInit(): void {
     firebase.auth().onAuthStateChanged(() => {
@@ -22,5 +24,9 @@ export class DashboardComponent {
         profile => {this.currentUser = profile; console.log(this.currentUser);}
       );
     });
+  }
+
+  goToSelection() {
+    this.router.navigate(['/selection']);
   }
 }

@@ -1,0 +1,13 @@
+.popup {
+    width: 250px;;
+    height: 6vh;
+    background-color: red;
+    border-radius: 10px;
+}
+
+.popup-container {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+}

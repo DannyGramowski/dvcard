@@ -1,8 +1,6 @@
 import docx
 from docx.shared import Inches, Pt
 from docx.text.run import Font
-import docx2pdf
-import aspose.words as aw
 from convert_to_pdf import convert
 
 def export_pdf(user):
@@ -60,4 +58,4 @@ def export_by_type(user: str, ftype: str):
         return None
     
 
-export_pdf({'name': 'John Smith'})
+# export_pdf({'name': 'John Smith'})
