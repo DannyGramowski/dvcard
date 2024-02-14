@@ -1,5 +1,8 @@
+import { Accommodation } from "./accommodation";
+
 export interface Symptom {
-    id: string,
+    id: number,
     name: string,
-    description: string
+    description: string,
+    accommodations: Accommodation[]
 }
