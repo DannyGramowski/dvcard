@@ -6,6 +6,8 @@ import { ContactComponent } from './contact/contact.component';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { SelectionComponent } from './selection/selection.component';
+import { TestimonialSubmissionComponent } from './testimonialsubmission/testimonialsubmission.component';
+import { TestSubmitSuccessComponent } from './test-submit-success/test-submit-success.component';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent},
@@ -14,5 +16,8 @@ export const routes: Routes = [
     {path: 'login', component: LoginComponent},
     {path: 'contact', component: ContactComponent},
     {path: 'register', component: RegisterComponent},
-    {path: 'selection', component: SelectionComponent}
+    {path: 'selection', component: SelectionComponent},
+    {path: 'submittestimonial/:uuid', component: TestimonialSubmissionComponent},
+    {path: 'submitsuccess', component: TestSubmitSuccessComponent},
+    
 ];

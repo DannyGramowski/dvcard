@@ -1,0 +1,36 @@
+.parent {
+ height: 100vh;
+ display: flex;
+ justify-content: center;
+ padding-top: 12.5vh;
+}
+
+
+/* */
+.container {
+    background-color: var(--blue);
+    color: black;
+    width: 80vw;
+    height: 60vh;
+    text-align: center;
+    border-radius: 10px;
+    border-width: 0px;
+    box-shadow: 0 0 3px rgb(150, 150, 151);
+    padding: 4vh;
+}
+/* .container {
+    background-color: white;
+    color: black;
+    width: 80vw;
+    height: 60vh;
+    text-align: center;
+    border-radius: 10px;
+    border-width: 0px;
+    box-shadow: 0 0 3px rgb(150, 150, 151);
+} */
+
+.success-text {
+    font-weight: var(--medium);
+    font-size: calc(3vh + 3vw);
+    width: 50vw;
+}

@@ -7,9 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import firebase_admin
 from firebase_admin import firestore, auth, credentials
 from firebase_admin.auth import UserNotFoundError
-from pydantic import BaseModel
 
-from data_classes import User
+from data_classes import User, Testimonial
 
 import secrets
 from typing import Annotated
@@ -386,17 +385,18 @@ def get_testimonial_id(user_id: str):
     return num + 1
 
 @app.post("/testimonial")
-def add_testimonial(from_name: str, description: str, relationship: str, id_token: Annotated[str | None, Header()] = None): # date?
-        user_to_id = decode_token(id_token)
-        doc_ref = get_doc([(USERS, user_to_id)])
-        if doc_ref[0] is False:
-            return doc_ref[1]
-        
-        testimonial_id = get_testimonial_id(user_to_id)
-        
-        print("testimonial id", testimonial_id)
-        doc_ref = doc_ref[1].collection(TESTIMONIALS).document(str(testimonial_id))
-        doc_ref.set({"id": testimonial_id, "fromname": from_name, "description": description, "relationship": relationship})
+def add_testimonial(testimonial: Testimonial, uuid: Annotated[str | None, Header()] = None): # date?
+    user_to_id = uuid
+    doc_ref = get_doc([(USERS, user_to_id)])
+    if doc_ref[0] is False:
+        return doc_ref[1]
+    
+    testimonial_id = get_testimonial_id(user_to_id)
+    
+    print("testimonial id", testimonial_id)
+    doc_ref = doc_ref[1].collection(TESTIMONIALS).document(str(testimonial_id))
+    doc_ref.set({"id": testimonial_id, "fromname": testimonial.from_name, "description": testimonial.description, "relationship": testimonial.relationship})
+    return {"success": "testimonial added"}
 
 @app.get("/testimonial")
 def get_testimonials(id_token: Annotated[str | None, Header()] = None):
