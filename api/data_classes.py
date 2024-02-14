@@ -56,7 +56,7 @@ class User(BaseModel):
 
 
 class Testimonial(BaseModel):
-    name: str
+    from_name: str
     description: str
     relationship: str
     #need uuid for post but dont store in database
