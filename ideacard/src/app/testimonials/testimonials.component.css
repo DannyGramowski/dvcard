@@ -12,7 +12,6 @@
 
 }
 
-
 .testimonials {
     width: 80vw;
     display: grid;
@@ -34,6 +33,7 @@
 
 .testimonial-text {
     font-size: 15px;
+    margin-bottom: 1.5vh;
 }
 
 .testimonial-bold {
