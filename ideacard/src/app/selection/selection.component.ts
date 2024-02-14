@@ -3,7 +3,10 @@ import { CommonModule } from '@angular/common';
 import { Disability } from '../interfaces/disability';
 import { DisabilityInfoService } from '../services/disability-info.service';
 import { Category } from '../interfaces/category';
-
+import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+import { Profile } from '../interfaces/profile';
+import { firebase } from 'firebaseui-angular';
 
 
 @Component({
@@ -15,6 +18,7 @@ import { Category } from '../interfaces/category';
 })
 export class SelectionComponent {
   
+  currentUser: Profile = {name: "", exists: null, disabilities: [], testimonials: [], language: '', location: '', user_id: '', publicprofile: false};
   //categoryDict: Object = {'AIDS / HIV': [], 'ADDICTION', 'ALLERGIES', 'AMPUTATION', 'ANXIETY / PANIC DISORDER', 'ADD / ADHD', 'BLOOD DISORDERS', 'BODY SIZE', 'BRAIN INJURY', 'CONGENITAL', 'COVID-19 RELATED', 'GASTROINTESTINAL DISORDERS', 'HEADACHES', 'HEARING IMPAIRMENT', 'HEART CONDITION', 'HEIGHT', 'INTELLECTUAL IMPAIRMENT', 'LEARNING DISABILITY', 'MENTAL HEALTH CONDITIONS', 'PALSY', 'PARALYSIS', 'SPEECH IMPAIRMENT', 'VISION IMPAIRMENT', 'WEIGHT'};
   selectedCategory: number = -1;
 
@@ -27,7 +31,15 @@ export class SelectionComponent {
   inspected: Disability | null = null;
   isAddGreyed: boolean = false;
 
-  constructor (private disabilityInfo: DisabilityInfoService) { this.getDisabilities(); }
+  constructor (private disabilityInfo: DisabilityInfoService, private router: Router, private authService: AuthService) { this.getDisabilities(); }
+
+  ngAfterContentInit(): void {
+    firebase.auth().onAuthStateChanged(() => {
+      this.authService.getProfile().then(
+        profile => {this.currentUser = profile; this.selectedDisabilities = this.currentUser.disabilities}
+      );
+    });
+  }
 
   selectCategory(category: Category, i: number) {
     console.log(category);
@@ -91,6 +103,9 @@ export class SelectionComponent {
   }
 
   continue() {
-    // continue routing
+    this.authService.getProfile().then(
+      profile => {profile.disabilities = this.selectedDisabilities}
+    );
+    this.router.navigate(['/info-form']);
   }
 }

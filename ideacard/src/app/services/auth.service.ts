@@ -42,6 +42,7 @@ export class AuthService {
       headers.set('Id-Token', this.token);
       //this.profile = await lastValueFrom(this.http.get<Profile>(`${this.url}/profile`, {headers: headers}));
       this.profile = await (await fetch(`${this.url}/profile`, {headers: headers})).json();
+      console.log(this.profile);
       this.profile.exists = true;
       console.log(this.profile);
     }

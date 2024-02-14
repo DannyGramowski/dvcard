@@ -1,0 +1,46 @@
+<div class="page">
+    <div class="header">Your Information</div>
+    <div *ngIf="disabilities.length == 0; else main" class="no-info">
+        <div class="warning">You haven't selected any disabilities yet. Return to the selection page to add yours.</div>
+        <div class="center-buttons">
+            <div class="button dark-button" (click)="goToSelection()">Select Disabilities</div>
+        </div>
+    </div>
+
+    <ng-template #main>
+        <div class="card">
+            <div class="card-inner">
+                <div class="card-title">{{disabilities[selectedPage].name}}</div>
+                <div class="card-description">{{disabilities[selectedPage].description}}</div>
+                <div class="columns">
+                    <div class="symptoms">
+                        <div>Symptoms</div>
+                        <div *ngFor="let symptom of disabilities[selectedPage].symptoms; index as k" class="list-item">
+                            <div class="checkbox" id="symptom{{k}}" (click)="checkSymptom(k)"></div>
+                            <div>{{symptom.name}}</div>
+                        </div>
+                    </div>
+                    <div class="accommodations">
+                        <div>Accommodations</div>
+                        <div *ngFor="let accommodation of disabilities[selectedPage].accommodations">{{accommodation.name}}</div>
+                    </div>
+                </div>
+                <input class="field email" placeholder="Email Address">
+                <textarea class="field message" placeholder="Message"></textarea>
+                <div class="buttons">
+                    <div *ngIf="selectedPage < disabilities.length - 1; else finish">
+                        <div (click)="runFunc()" class="submit button dark-button">Continue ></div>
+                    </div>
+                    <ng-template #finish>
+                        <div (click)="runFunc()" class="submit button dark-button">Finish ></div>
+                    </ng-template>
+                    <div #pips class="pips">
+                        <div *ngFor="let pip of disabilities; index as i" [ngClass]="{'current': i === selectedPage}" id="pip{{i}}" class="pip" (click)="selectPage(i)"></div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </ng-template>
+    
+</div>
