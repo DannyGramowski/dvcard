@@ -39,6 +39,6 @@ export class DisabilityInfoService {
   getRawDisability(id: number): Disability | null {
     let d = this.getDisabilityById(id);
     if (!d) { return null; }
-    return {id: d.id, name: d.name, description: d.description, notes: "", symptoms: [], accommodations: []}
+    return {id: d.id, name: d.name, description: d.description, extrainfo: "", symptoms: [], accommodations: []}
   }
 }

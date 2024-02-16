@@ -1,21 +1,40 @@
 <div class="center parent">
     <div class="container">
-        <div>{{profile.name}}</div>
-        <div class="di"></div>
-        <div *ngFor="let disability of profile.disabilities" class="description-container">
-            <div class="disability-header">Disability</div>
-            <div class="disability-description">{{disability.description}}</div>
-            <div>Symptoms</div>
-            <div *ngFor="let symptom of disability.symptoms">
-                <div class="symptom-header">{{symptom.name}}</div>
-                <div class="symptom-description">{{symptom.description}}</div>
+        <div class="profile-name">{{profile.name}}</div>
+        <div class="disability-header">Disabilites</div>
+        <div *ngFor="let disability of profile.disabilities" class="disability-container">
+            <div class="disability-name">{{disability.name}}</div>
+            <div class="disability-description">description:&nbsp;{{disability.description}}</div>
+            <div class="disability-children-container">
+                <div class="item-container symptom-container">
+                    <div class="item-header">Symptoms</div>
+                        <div *ngFor="let symptom of disability.symptoms">
+                            <div class="item-name">name:&nbsp;{{symptom.name}}</div>
+                            <div class="item-description">description:&nbsp;{{symptom.description}}</div>
+                    </div>
+                </div>
+
+                <div class="buffer"></div>
+                
+                <div class="item-container accommodation-container">
+                    <div class="item-header">Accommodations</div>
+                    <div *ngFor="let accommodation of disability.accommodations">
+                        <div class="item-name">name:&nbsp;{{accommodation.name}}</div>
+                        <div class="item-description">description:&nbsp;{{accommodation.description}}</div>
+                    </div>
+                </div>
             </div>
-            <div>Accommodations</div>
-            <div *ngFor="let accommodation of disability.accommodations">
-                <div class="accommodation-header">{{accommodation.name}}</div>
-                <div class="accommodation-description">{{accommodation.description}}</div>
+            <div>notes:&nbsp;{{disability.extrainfo}}</div>
+        </div>
+        <div class="testimonials-header">Testimonials</div>
+        <div *ngFor="let testimonial of profile.testimonials" class="testimonial-container">
+            <div class="testimonial-text">
+                {{testimonial.description}}
             </div>
-            <div>{{disability.extrainfo}}</div>
+            <div class="testimonial-bold">
+                -{{testimonial.fromname}}, &nbsp;{{testimonial.relationship}} {{testimonial.timestamp}} 
+                <!-- format timestamp with month and year -->
+            </div>
         </div>
     </div>
 </div>
