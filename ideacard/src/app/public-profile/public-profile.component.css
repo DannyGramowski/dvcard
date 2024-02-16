@@ -1,0 +1,35 @@
+.parent {
+    height: 100vh;
+}
+
+.container {
+    width: 75vw;
+}
+
+.disability-container {
+    background-color: var(--darkblue);
+}
+
+.disability-header {
+
+}
+
+.disability-description {
+
+}
+
+.symptom-header {
+    
+}
+
+.symptom-description {
+
+}
+
+.symptom-header {
+    
+}
+
+.symptom-description {
+
+}

@@ -8,6 +8,7 @@ import { RegisterComponent } from './register/register.component';
 import { SelectionComponent } from './selection/selection.component';
 import { TestimonialSubmissionComponent } from './testimonialsubmission/testimonialsubmission.component';
 import { TestSubmitSuccessComponent } from './test-submit-success/test-submit-success.component';
+import { PublicProfileComponent } from './public-profile/public-profile.component';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent},
@@ -19,5 +20,5 @@ export const routes: Routes = [
     {path: 'selection', component: SelectionComponent},
     {path: 'submittestimonial/:uuid', component: TestimonialSubmissionComponent},
     {path: 'submitsuccess', component: TestSubmitSuccessComponent},
-    
+    {path: 'profile/:uuid', component: PublicProfileComponent}
 ];

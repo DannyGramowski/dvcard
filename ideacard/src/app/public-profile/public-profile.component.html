@@ -1,0 +1,38 @@
+<div class="center parent">
+    <div class="container">
+        <div>{{profile.name}}</div>
+        <div class="di"></div>
+        <div *ngFor="let disability of profile.disabilities" class="description-container">
+            <div class="disability-header">Disability</div>
+            <div class="disability-description">{{disability.description}}</div>
+            <div>Symptoms</div>
+            <div *ngFor="let symptom of disability.symptoms">
+                <div class="symptom-header">{{symptom.name}}</div>
+                <div class="symptom-description">{{symptom.description}}</div>
+            </div>
+            <div>Accommodations</div>
+            <div *ngFor="let accommodation of disability.accommodations">
+                <div class="accommodation-header">{{accommodation.name}}</div>
+                <div class="accommodation-description">{{accommodation.description}}</div>
+            </div>
+            <div>{{disability.extrainfo}}</div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 
+name
+disabilies
+-name
+-description
+-symptoms
+--name
+--description
+-accommodations
+--name
+--description
+testimonials
+--relationship
+--message 
+-->
