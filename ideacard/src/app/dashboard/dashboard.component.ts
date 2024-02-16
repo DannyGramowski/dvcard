@@ -19,14 +19,32 @@ export class DashboardComponent {
   constructor (private authService: AuthService, private router: Router) {};
 
   ngAfterContentInit(): void {
-    firebase.auth().onAuthStateChanged(() => {
-      this.authService.getProfile().then(
-        profile => {this.currentUser = profile; console.log(this.currentUser);}
-      );
-    });
+    let result = this.authService.getProfileSync();
+    if (result) {
+      this.currentUser = result;
+    }
+    else {
+      firebase.auth().onAuthStateChanged(() => {
+        this.authService.getProfile().then(
+          profile => {this.currentUser = profile;}
+        );
+      });
+    }
   }
 
   goToSelection() {
     this.router.navigate(['/selection']);
+  }
+  
+  goToEdit() {
+    this.router.navigate(['/info-form']);
+  }
+
+  exportPopup() {
+
+  }
+
+  deleteDisability(i: number) {
+    this.currentUser.disabilities.splice(i, 1);
   }
 }

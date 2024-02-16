@@ -23,7 +23,6 @@ export class AppComponent {
   ) { };
 
   ngOnInit() {
-    console.log("init");
     firebase.initializeApp(environment.firebaseConfig);
     firebase.auth().onAuthStateChanged(() => {
       this.authService.getProfile();

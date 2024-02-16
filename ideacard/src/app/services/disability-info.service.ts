@@ -31,4 +31,14 @@ export class DisabilityInfoService {
   getDisabilities() {
     return this.disabilities;
   }
+
+  getDisabilityById(id: number) {
+    return this.disabilities.find(d => d.id == id);
+  }
+
+  getRawDisability(id: number): Disability | null {
+    let d = this.getDisabilityById(id);
+    if (!d) { return null; }
+    return {id: d.id, name: d.name, description: d.description, notes: "", symptoms: [], accommodations: []}
+  }
 }

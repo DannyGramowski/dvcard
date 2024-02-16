@@ -1,5 +1,7 @@
 import docx
 from docx.shared import Inches, Pt
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.table import WD_ALIGN_VERTICAL
 from docx.text.run import Font
 from convert_to_pdf import convert
 
@@ -13,27 +15,41 @@ def export_pdf(user):
     doc.sections[0].bottom_margin = Inches(1)
     doc.sections[0].right_margin = Inches(1)
 
+    styles = doc.styles
+    for i, s in enumerate(styles):
+        print(i, s.name)
+
     # Generate header
     table = doc.add_table(rows=1, cols=3)
     table.autofit = False 
     table.allow_autofit = False
 
-    logo = table.rows[0].cells[0].paragraphs[0].add_run().add_picture('api/assets/Sample_logo.png')
-    logo.width = Inches(0.6)
-    logo.height = Inches(0.4)
-    table.columns[0].width = Inches(1)
+    WD_ALIGN_PARAGRAPH.CENTER
+    WD_ALIGN_VERTICAL.CENTER
+
+    table.style = styles['Colorful Grid Accent 4']
+
+    logo = table.rows[0].cells[0].paragraphs[0].add_run().add_picture('assets/Sample_logo.png')
+    logo.width = Inches(1.4)
+    logo.height = Inches(0.7)
+    table.rows[0].cells[0].vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+    table.rows[0].cells[0].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
+    table.columns[0].width = Inches(1.6)
 
     table.rows[0].cells[1].text = user['name']
     table.rows[0].cells[1].paragraphs[0].runs[0].font.bold = True
     table.rows[0].cells[1].paragraphs[0].runs[0].font.size = Pt(24)
-    table.columns[1].width = Inches(4.5)
+    table.columns[1].width = Inches(3.3)
+    table.rows[0].cells[1].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
 
-    qr = table.rows[0].cells[2].paragraphs[0].add_run().add_picture('api/assets/Sample_qr.png')
-    qr.width = Inches(0.6)
-    qr.height = Inches(0.6)
-    table.columns[2].width = Inches(1)
+    qr = table.rows[0].cells[2].paragraphs[0].add_run().add_picture('assets/Sample_qr.png')
+    qr.width = Inches(0.7)
+    qr.height = Inches(0.7)
+    table.rows[0].cells[2].vertical_alignment = WD_ALIGN_VERTICAL.CENTER
+    table.rows[0].cells[2].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    table.columns[2].width = Inches(1.6)
 
-    #table.rows[0].height = Inches(1)
+    table.rows[0].height = Inches(0.8)
 
     # Generate disabilities
 
@@ -58,4 +74,4 @@ def export_by_type(user: str, ftype: str):
         return None
     
 
-# export_pdf({'name': 'John Smith'})
+export_pdf({'name': 'John Smith'})

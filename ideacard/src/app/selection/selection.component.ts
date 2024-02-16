@@ -3,7 +3,10 @@ import { CommonModule } from '@angular/common';
 import { Disability } from '../interfaces/disability';
 import { DisabilityInfoService } from '../services/disability-info.service';
 import { Category } from '../interfaces/category';
-
+import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+import { Profile } from '../interfaces/profile';
+import { firebase } from 'firebaseui-angular';
 
 
 @Component({
@@ -15,6 +18,7 @@ import { Category } from '../interfaces/category';
 })
 export class SelectionComponent {
   
+  currentUser: Profile = {name: "", exists: null, disabilities: [], testimonials: [], language: '', location: '', user_id: '', publicprofile: false};
   //categoryDict: Object = {'AIDS / HIV': [], 'ADDICTION', 'ALLERGIES', 'AMPUTATION', 'ANXIETY / PANIC DISORDER', 'ADD / ADHD', 'BLOOD DISORDERS', 'BODY SIZE', 'BRAIN INJURY', 'CONGENITAL', 'COVID-19 RELATED', 'GASTROINTESTINAL DISORDERS', 'HEADACHES', 'HEARING IMPAIRMENT', 'HEART CONDITION', 'HEIGHT', 'INTELLECTUAL IMPAIRMENT', 'LEARNING DISABILITY', 'MENTAL HEALTH CONDITIONS', 'PALSY', 'PARALYSIS', 'SPEECH IMPAIRMENT', 'VISION IMPAIRMENT', 'WEIGHT'};
   selectedCategory: number = -1;
 
@@ -27,10 +31,24 @@ export class SelectionComponent {
   inspected: Disability | null = null;
   isAddGreyed: boolean = false;
 
-  constructor (private disabilityInfo: DisabilityInfoService) { this.getDisabilities(); }
+  constructor (private disabilityInfo: DisabilityInfoService, private router: Router, private authService: AuthService) { this.getDisabilities(); }
+
+  ngAfterContentInit(): void {
+    let result = this.authService.getProfileSync();
+    if (result) {
+      this.currentUser = result;
+      this.selectedDisabilities = this.currentUser.disabilities;
+    }
+    else {
+      firebase.auth().onAuthStateChanged(() => {
+        this.authService.getProfile().then(
+          profile => {this.currentUser = profile; this.selectedDisabilities = this.currentUser.disabilities;}
+        );
+      });
+    }
+  }
 
   selectCategory(category: Category, i: number) {
-    console.log(category);
     if (this.selectedCategory == i) {
       document.getElementById(`category${this.selectedCategory}`)?.classList.remove('selected-category');
       this.selectedCategory = -1;
@@ -48,7 +66,6 @@ export class SelectionComponent {
     let disabilities = this.disabilityInfo.getDisabilities();
     disabilities = disabilities.filter((d) => d.name.toLowerCase().includes(this.searchValue.toLowerCase()));
     if (this.selectedCategory >= 0) {
-      console.log(this.categories[this.selectedCategory].disabilities.map(item => item.name));
       disabilities = disabilities.filter((d) => this.categories[this.selectedCategory].disabilities.map(item => item.name).includes(d.name));
     }
     this.searchResults = disabilities;
@@ -82,7 +99,7 @@ export class SelectionComponent {
     if (this.isAddGreyed) {
       return;
     }
-    this.selectedDisabilities.push(this.inspected!);
+    this.selectedDisabilities.push(this.disabilityInfo.getRawDisability(this.inspected!.id)!);
     this.inspected = null;
   }
 
@@ -91,6 +108,17 @@ export class SelectionComponent {
   }
 
   continue() {
-    // continue routing
+    this.authService.getProfile().then(
+      profile => {profile.disabilities = this.selectedDisabilities.flatMap(d => 
+        {
+          for (let db of profile.disabilities) {
+            if (db.id == d.id) { return db; }
+          }
+          let v = this.disabilityInfo.getRawDisability(d.id);
+          return v ? [v] : []
+        }
+        ); this.router.navigate(['/info-form']);}
+    );
+    
   }
 }

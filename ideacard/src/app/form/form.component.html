@@ -1,0 +1,65 @@
+<div class="page">
+    <div class="header">Your Information</div>
+    <div *ngIf="disabilities.length == 0; else main" class="no-info">
+        <div class="warning">You haven't selected any disabilities yet. Return to the selection page to add yours.</div>
+        <div class="center-buttons">
+            <div class="button dark-button" (click)="goToSelection()">Select Disabilities</div>
+        </div>
+    </div>
+
+    <ng-template #main>
+        <div class="card">
+            <div class="card-inner">
+                <div class="card-title">{{disabilities[selectedPage].name}}</div>
+                <div class="card-description">{{disabilities[selectedPage].description}}</div>
+                <div class="columns">
+                    <div class="symptoms">
+                        <div class="column-header">Symptoms</div>
+                        <div *ngFor="let symptom of disabilities[selectedPage].symptoms; index as k" class="list-item" refresh (init) = "initSymptoms()" >
+                            <div class="checkbox" id="symptom{{k}}" (click)="checkSymptom(k, symptom)"></div>
+                            <div *ngIf="symptom.id >= 0">
+                                <div (click)="checkSymptom(k, symptom)">{{symptom.name}}</div>
+                            </div>
+                            <div *ngIf="symptom.id < 0" class="custom-parent">
+                                <input id="custom-symptom{{symptom.id}}" class="custom field" placeholder="Symptom"/>
+                            </div>
+                        </div>
+                        <div class="add-new" (click)="addNewSymptom()">Add other symptom</div>
+                    </div>
+                    <div class="accommodations">
+                        <div class="column-header">Accommodations</div>
+                        <div *ngIf="accommodations.length > 0; else noAccommodations">
+                            <div *ngFor="let accommodation of accommodations; index as k" class="list-item" refresh (init) = "initAccommodations()">
+                                <div class="checkbox" id="accommodation{{k}}" (click)="checkAccommodation(k, accommodation)"></div>
+                                <div *ngIf="accommodation.id >= 0">
+                                    <div (click)="checkAccommodation(k, accommodation)">{{accommodation.name}}</div>
+                                </div>
+                                <div *ngIf="accommodation.id < 0" class="custom-parent">
+                                    <input id="custom-accommodation{{accommodation.id}}" class="custom field" placeholder="Accommodation">
+                                </div>
+                            </div>
+                        </div>
+                        <ng-template #noAccommodations>
+                            <div class="no-accommodations">Select a symptom to see recommended accommodations.</div>
+                        </ng-template>
+                        <div class="add-new" (click)="addNewAccommodation()">Add other accommodation</div>
+                    </div>
+                </div>
+                <textarea id="notes" class="field notes" placeholder="Notes (Relation to Job Requirements, Associated Strengths, Further Explanations, etc.)"></textarea>
+                <div class="buttons">
+                    <div *ngIf="selectedPage < disabilities.length - 1; else finish">
+                        <div (click)="nextDisability()" class="submit button dark-button">Continue ></div>
+                    </div>
+                    <ng-template #finish>
+                        <div (click)="continue()" class="submit button dark-button">Finish ></div>
+                    </ng-template>
+                    <div #pips class="pips">
+                        <div *ngFor="let pip of disabilities; index as i" [ngClass]="{'current': i === selectedPage}" id="pip{{i}}" class="pip" (click)="selectPage(i)"></div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </ng-template>
+    
+</div>

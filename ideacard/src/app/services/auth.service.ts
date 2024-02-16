@@ -23,7 +23,6 @@ export class AuthService {
   async getToken() {
     if (! this.token) {
       this.token = await firebase.auth().currentUser?.getIdToken();
-      console.log(this.token);
     }
     return this.token;
   }
@@ -31,10 +30,8 @@ export class AuthService {
   async getProfile() {
     if (! this.token) {
       await this.getToken();
-      console.log(this.token);
     } 
     if (! this.token) {
-      console.log("returning")
       return this.profile;
     }
     if (this.profile.exists != true) {
@@ -43,10 +40,12 @@ export class AuthService {
       //this.profile = await lastValueFrom(this.http.get<Profile>(`${this.url}/profile`, {headers: headers}));
       this.profile = await (await fetch(`${this.url}/profile`, {headers: headers})).json();
       this.profile.exists = true;
-      console.log(this.profile);
     }
     return this.profile;
   }
 
+  getProfileSync() {
+    return this.profile.exists ? this.profile : null;
+  }
   
 }
