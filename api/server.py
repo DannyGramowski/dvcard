@@ -455,7 +455,7 @@ def public_get_profile(user_id: str):
         return user
         # return {"user": get_user_or_none(user_id), DISABILITIES: get_disabilities_by_uid(user_id), TESTIMONIALS: get_testimonials_by_uid(user_id)}
     else: # return name
-        return {"user": get_user_or_none(user_id)["name"]}
+        return {"name": get_user_or_none(user_id)["name"]}
 
 def generate_uuid_from_ref(ref):
     """

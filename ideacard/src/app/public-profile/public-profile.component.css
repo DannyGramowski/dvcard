@@ -2,6 +2,11 @@
     font-family: poppins;
 }
 
+.private-text {
+    text-align: center;
+    font-size: calc(2vh + 1vw);
+}
+
 .container {
     width: 75vw;
 }

@@ -14,9 +14,11 @@ import { CommonModule } from '@angular/common';
 export class PublicProfileComponent implements OnInit {
   uuid: string;
   profile: Profile
+  publicProfile: boolean
 
   constructor(private route: ActivatedRoute, private router: Router) {
     this.uuid = this.route.snapshot.paramMap.get('uuid') ?? "not valid uuid";
+    this.publicProfile = false
     this.profile = {name: "", language: "", location: "", uuid: "", publicprofile: false, exists: false, disabilities: [], testimonials: []}
   }
   
@@ -25,6 +27,7 @@ export class PublicProfileComponent implements OnInit {
     .then(res => {
       res.json()
       .then(data => {
+        this.publicProfile = "publicprofile" in data;
         this.profile = data;
         console.log(this.profile);
       })
