@@ -8,7 +8,7 @@ import firebase_admin
 from firebase_admin import firestore, auth, credentials
 from firebase_admin.auth import UserNotFoundError
 
-from data_classes import User, Testimonial
+from data_classes import User, Testimonial, Accommodation, Symptom, Disability, ID
 
 import secrets
 from typing import Annotated
@@ -44,16 +44,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# @app.get("/")
-# def test():
-#     users_ref = db.collection(USERS)
-#     docs = users_ref.stream()
-#     # create_user("Joe", "random_account")
-
-#     for doc in docs:
-#         print(f"{doc.id} => {doc.to_dict()}")
-#     return {"status": True}
-
 def decode_token(id_token):
     decoded_token = auth.verify_id_token(id_token, clock_skew_seconds=30)
     uid = decoded_token.get('uid')
@@ -74,33 +64,6 @@ def get_doc(input: [(str, str)]):
     
     return (True, doc)
 
-
-# @app.post("/user")
-# def create_user(name: str, language: str):
-#     """
-#     Creates a new user in the Firestore database.
-#     """
-#     # Generate UUID
-#     ref = db.collection(USERS)
-#     uuid = generate_uuid_from_ref(ref)
-
-#     # Add user and populate with starter data
-#     doc_ref = ref.document(uuid)
-#     doc_ref.set({"uuid": uuid, "name": name, "language": language, "location": None, "photo": None, "lastexport": None, "publicprofile": False})
-    
-#     # Return UUID
-#     return uuid
-
-# def get_user(Id_Token: Annotated[str | None, Header()] = None):
-#     uid = decode_token(Id_Token)
-#     ref = db.collection("users")
-#     user_ref = ref.document(uid)
-
-#     print(user_ref)
-
-#     return 
-
-# will swap over to auth when I figure that out. same for all the other ones
 @app.get("/user")
 def get_user(id_token: Annotated[str | None, Header()] = None):
     user_id = decode_token(id_token)
@@ -155,7 +118,7 @@ def delete_user(id_token: Annotated[str | None, Header()] = None):
 
 #Disabilities
 @app.post("/disability")
-def add_disability(disability_id: str, name: str, description: str, id_token: Annotated[str | None, Header()] = None):
+def add_disability(disability: Disability, id_token: Annotated[str | None, Header()] = None):
     """
     Adds a new disability to the specified user.
     """
@@ -163,11 +126,11 @@ def add_disability(disability_id: str, name: str, description: str, id_token: An
     result = get_doc([(USERS, user_id)])
     if result[0] is False:
         return result[1]
-    disability = result[1].collection(DISABILITIES).document(disability_id)
-    disability.set({"id": disability_id, "name": name, "description": description, "extrainfo": ""})
+    disability_ref = result[1].collection(DISABILITIES).document(disability.id)
+    disability_ref.set({"id": disability.id, "name": disability.name, "description": disability.description, "extrainfo": disability.extra_info})
 
     # Return disability_id
-    return disability_id
+    return disability.id
 
 @app.get("/disability")
 def get_disabilities(id_token: Annotated[str | None, Header()] = None):
@@ -191,27 +154,17 @@ def get_disabilities_by_uid(uid: str):
     return disabilities
 
 @app.put("/disability")
-def update_disability(disability_id: str, name: str = None, description: str = None, extrainfo: str = None, id_token: Annotated[str | None, Header()] = None):
+# def update_disability(disabilityd_id: str, name: str = None, description: str = None, extrainfo: str = None, id_token: Annotated[str | None, Header()] = None):
+def update_disability(disability: Disability, id_token: Annotated[str | None, Header()] = None):
     """
     Updates disability of the specified user.
     """
     user_id = decode_token(id_token)
-    doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)])
+    doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability.id)])
     if doc_ref[0] is False:
         return doc_ref[1]
-    
-    doc_ref = doc_ref[1]
 
-    disability = doc_ref.get().to_dict()
-
-    if name is not None:
-        disability["name"] = name
-    if description is not None:
-        disability["description"] = description
-    if extrainfo is not None:
-        disability["extrainfo"] = extrainfo
-
-    doc_ref.set(disability)
+    doc_ref[1].set({"id": disability.id, "name": disability.name, "description": disability.description, "extrainfo": disability.extra_info})
 
 @app.delete("/disability")
 def delete_disability(disability_id: str, id_token: Annotated[str | None, Header()] = None):
@@ -226,18 +179,18 @@ def delete_disability(disability_id: str, id_token: Annotated[str | None, Header
 
 #Symptoms
 @app.post("/symptom")
-def add_symptom(disability_id: str, symptom_id: str, name: str, description: str, id_token: Annotated[str | None, Header()] = None):
+def add_symptom(symptom: Symptom, disability_id: ID, id_token: Annotated[str | None, Header()] = None):
     """
     Adds a new symptom to the specified user and disability.
     """
     user_id = decode_token(id_token)
-    doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)]) 
+    doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id.id)]) 
     if doc_ref[0] is False:
         return doc_ref[1]
-    doc_ref = doc_ref[1].collection(SYMPTOMS).document(symptom_id)
-    doc_ref.set({"id": symptom_id, "name": name, "description": description})
+    doc_ref = doc_ref[1].collection(SYMPTOMS).document(symptom.id)
+    doc_ref.set({"id": symptom.id, "name": symptom.name, "description": symptom.description})
 
-    return symptom_id
+    return symptom.id
 
 def get_symptoms_by_uuid(disability_id: str, user_id: str):
     symptoms = []
@@ -259,23 +212,18 @@ def get_symptoms(disability_id: str, id_token: Annotated[str | None, Header()] =
     user_id = decode_token(id_token)
     return get_symptoms_by_uuid(disability_id, user_id)
     
-
 @app.put("/symptom")
-def update_symptom(disability_id: str, symptom_id:str, name: str = None, description: str = None, id_token: Annotated[str | None, Header()] = None):
+
+def update_symptom(symptom: Symptom, disability_id: ID, id_token: Annotated[str | None, Header()] = None):
     """
     Updates disability of the specified user.
     """
     user_id = decode_token(id_token)
-    doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id), (SYMPTOMS, symptom_id)])
+    doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id.id), (SYMPTOMS, symptom.id)])
     if doc_ref[0] is False:
         return doc_ref[1]
-    symptom = doc_ref[1].get().to_dict()
-    if name is not None:
-        symptom["name"] = name
-    if description is not None:
-        symptom["description"] = description
-
-    doc_ref[1].set(symptom)
+    
+    doc_ref[1].set({"id": symptom.id, "name": symptom.name, "description": symptom.description})
 
 @app.delete("/symptom")
 def delete_symptom(disability_id: str, symptom_id: str, id_token: Annotated[str | None, Header()] = None):
@@ -306,18 +254,18 @@ def export(ftype: str, id_token: Annotated[str | None, Header()] = None):
 
 #Accommodation
 @app.post("/accommodation")
-def add_accommodation(disability_id: str, accommodation_id: str, name: str, description: str, id_token: Annotated[str | None, Header()] = None):
+def add_accommodation(disability_id: ID, accommodation: Accommodation, id_token: Annotated[str | None, Header()] = None):
     """
     Adds a new accommodation to the specified user and disability.
     """
     user_id = decode_token(id_token)
-    doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)])
+    doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id.id)])
     if doc_ref[0] is False:
         return doc_ref[1]
-    doc_ref = doc_ref[1].collection(ACCOMMODATIONS).document(accommodation_id)
-    doc_ref.set({"id": accommodation_id, "name": name, "description": description})
+    doc_ref = doc_ref[1].collection(ACCOMMODATIONS).document(accommodation.id)
+    doc_ref.set({"id": accommodation.id, "name": accommodation.name, "description": accommodation.description})
 
-    return accommodation_id
+    return accommodation.id
 
 def get_accommodations_by_uuid(disability_id: str, user_id: str):
     accommodations = []
@@ -340,21 +288,16 @@ def get_accommodations(disability_id: str, id_token: Annotated[str | None, Heade
     return get_symptoms_by_uuid(disability_id, user_id)
 
 @app.put("/accommodation")
-def update_accommodations(disability_id: str, accommodation_id:str, name: str = None, description: str = None , id_token: Annotated[str | None, Header()] = None):
+def update_accommodations(disability_id: ID, accommodation: Accommodation, id_token: Annotated[str | None, Header()] = None):
     """
     Updates disability of the specified user.
     """
     user_id = decode_token(id_token)
-    doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id), (ACCOMMODATIONS, accommodation_id)])
+    doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id.id), (ACCOMMODATIONS, accommodation.id)])
     if doc_ref[0] is False:
         return doc_ref[1]
-    accommodation = doc_ref[1].get().to_dict()
-    if name is not None:
-        accommodation["name"] = name
-    if description is not None:
-        accommodation["description"] = description
 
-    doc_ref[1].set(accommodation)
+    doc_ref[1].set({"id": accommodation.id, "name": accommodation.name, "description": accommodation.description})
 
 @app.delete("/accommodation")
 def delete_accommodation(disability_id: str, accommodation_id: str, id_token: Annotated[str | None, Header()] = None):
