@@ -12,7 +12,7 @@ import { firebase } from 'firebaseui-angular';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-  public currentUser: Profile = {name: "", exists: null, disabilities: [], testimonials: [], language: '', location: '', user_id: '', publicprofile: false};
+  public currentUser: Profile = {name: "", exists: null, disabilities: [], testimonials: [], language: '', location: '', uuid: '', publicprofile: false};
 
   constructor (private authService: AuthService, private router: Router) {};
 

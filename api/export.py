@@ -74,4 +74,4 @@ def export_by_type(user: str, ftype: str):
         return None
     
 
-export_pdf({'name': 'John Smith'})
+# export_pdf({'name': 'John Smith'})

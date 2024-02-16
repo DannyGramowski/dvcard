@@ -19,7 +19,7 @@ import { Symptom } from '../interfaces/symptom';
   styleUrl: './form.component.css'
 })
 export class FormComponent {
-  public currentUser: Profile = {name: "", exists: null, disabilities: [], testimonials: [], language: '', location: '', user_id: '', publicprofile: false};
+  public currentUser: Profile = {name: "", exists: null, disabilities: [], testimonials: [], language: '', location: '', uuid: '', publicprofile: false};
 
   selectedPage: number = 0;
 
@@ -69,7 +69,7 @@ export class FormComponent {
       }
     });
     
-    (document.getElementById('notes') as HTMLTextAreaElement).value = this.currentUser.disabilities[this.selectedPage].notes;
+    (document.getElementById('notes') as HTMLTextAreaElement).value = this.currentUser.disabilities[this.selectedPage].extrainfo;
     for (let item of this.currentUser.disabilities[this.selectedPage].symptoms) {
       if (item.id < 0) {
         if (document.getElementById(`custom-symptom${item.id}`)) {
@@ -152,7 +152,7 @@ export class FormComponent {
   }
 
   saveNoteContent() {
-    this.currentUser.disabilities[this.selectedPage].notes = (document.getElementById('notes') as HTMLTextAreaElement).value;
+    this.currentUser.disabilities[this.selectedPage].extrainfo = (document.getElementById('notes') as HTMLTextAreaElement).value;
     (document.getElementById('notes') as HTMLTextAreaElement).value = "";
     for (let item of this.currentUser.disabilities[this.selectedPage].symptoms) {
       if (item.id < 0) {

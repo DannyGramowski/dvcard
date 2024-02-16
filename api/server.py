@@ -183,10 +183,10 @@ def get_disabilities_by_uid(uid: str):
         return result[1]
     disability_ref = result[1].collection(DISABILITIES)
     disabilities = []
-    for i, disability in enumerate(disability_ref.stream()):
-        disabilities[i] = disability_ref.document(disability.id).get().to_dict()
-        disabilities[i][SYMPTOMS] = get_symptoms(uid, disability.id)
-        disabilities[i][ACCOMMODATIONS] = get_accommodations(uid, disability.id)
+    for disability in disability_ref.stream():
+        disabilities.append(disability_ref.document(disability.id).get().to_dict())
+        disabilities[-1][SYMPTOMS] = get_symptoms_by_uuid(disability.id, uid)
+        disabilities[-1][ACCOMMODATIONS] = get_accommodations_by_uuid(disability.id, uid)
 
     return disabilities
 
@@ -239,22 +239,26 @@ def add_symptom(disability_id: str, symptom_id: str, name: str, description: str
 
     return symptom_id
 
-@app.get("/symptom")
-def get_symptoms(disability_id: str, id_token: Annotated[str | None, Header()] = None):
-    """
-    Gets all of the symptom of the specified user and disability.
-    """
-    user_id = decode_token(id_token)
-    symptoms = dict()
+def get_symptoms_by_uuid(disability_id: str, user_id: str):
+    symptoms = []
     disability_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)])
     if disability_ref[0] is False:
         return disability_ref[1]
     
     symptom_ref = disability_ref[1].collection(SYMPTOMS)
     for symptom in symptom_ref.stream():
-        symptoms[symptom.id] = symptom_ref.document(symptom.id).get().to_dict()
+        symptoms.append(symptom_ref.document(symptom.id).get().to_dict())
 
     return symptoms
+
+@app.get("/symptom")
+def get_symptoms(disability_id: str, id_token: Annotated[str | None, Header()] = None):
+    """
+    Gets all of the symptom of the specified user and disability.
+    """
+    user_id = decode_token(id_token)
+    return get_symptoms_by_uuid(disability_id, user_id)
+    
 
 @app.put("/symptom")
 def update_symptom(disability_id: str, symptom_id:str, name: str = None, description: str = None, id_token: Annotated[str | None, Header()] = None):
@@ -315,22 +319,25 @@ def add_accommodation(disability_id: str, accommodation_id: str, name: str, desc
 
     return accommodation_id
 
-@app.get("/accommodation")
-def get_accommodations(disability_id: str, id_token: Annotated[str | None, Header()] = None):
-    """
-    Gets all of the symptom of the specified user and disability.
-    """
-    user_id = decode_token(id_token)
-    accommodations = dict()
+def get_accommodations_by_uuid(disability_id: str, user_id: str):
+    accommodations = []
     disability_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)])
     if disability_ref[0] is False:
         return disability_ref[1]
     
     accommodation_ref = disability_ref[1].collection(ACCOMMODATIONS)
     for accommodation in accommodation_ref.stream():
-        accommodations[accommodation.id] = accommodation_ref.document(accommodation.id).get().to_dict()
+        accommodations.append(accommodation_ref.document(accommodation.id).get().to_dict())
 
     return accommodations
+
+@app.get("/accommodation")
+def get_accommodations(disability_id: str, id_token: Annotated[str | None, Header()] = None):
+    """
+    Gets all of the symptom of the specified user and disability.
+    """
+    user_id = decode_token(id_token)
+    return get_symptoms_by_uuid(disability_id, user_id)
 
 @app.put("/accommodation")
 def update_accommodations(disability_id: str, accommodation_id:str, name: str = None, description: str = None , id_token: Annotated[str | None, Header()] = None):
@@ -442,9 +449,13 @@ def public_get_profile(user_id: str):
     
     user = doc_ref[1].get().to_dict()
     if user["publicprofile"] is True: #return all info
-        return {"user": get_user(user_id), DISABILITIES: get_disabilities(user_id), TESTIMONIALS: get_testimonials(user_id)}
+        user = get_user_or_none(user_id)
+        user.update({'disabilities': get_disabilities_by_uid(user_id), 'testimonials': get_testimonials_by_uid(user_id)})
+
+        return user
+        # return {"user": get_user_or_none(user_id), DISABILITIES: get_disabilities_by_uid(user_id), TESTIMONIALS: get_testimonials_by_uid(user_id)}
     else: # return name
-        return {"user": get_user(user_id)["name"]}
+        return {"name": get_user_or_none(user_id)["name"]}
 
 def generate_uuid_from_ref(ref):
     """
