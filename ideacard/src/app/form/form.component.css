@@ -23,12 +23,21 @@
     box-shadow: 0px 4px 10px var(--card-shadow);
   }
 
+  .card-title {
+    margin-bottom: 1vh;
+  }
+
   .card-description {
+    margin-bottom: 2vh;
     font-size: 1.75vh;
   }
 
   .columns {
     display: flex;
+  }
+
+  .column-header {
+    margin-bottom: 1vh;
   }
 
   .columns > div {
@@ -38,6 +47,8 @@
   .list-item {
     display: flex;
     align-items: center;
+    font-size: 1.75vh;
+    cursor: pointer;
   }
 
   .checkbox {
@@ -66,10 +77,15 @@
     font-family: Poppins;
     font-weight: var(--light);
     font-style: normal;
-    font-size: calc(1.5vh + 0.5vw);
+    font-size: 1.75vh;
     color: #000;
     box-shadow: 0px 0px 4px var(--input-shadow);
   }
+
+  .notes {
+    margin-top: 2vh;
+  }
+
   .message {
     min-height: calc(20vh + 2vw);
     overflow: none;
@@ -132,4 +148,35 @@
 
   .current {
     background: var(--darkblue);
+  }
+
+  .custom-parent {
+    flex: 1;
+    margin-right: 5vw;
+    margin-top: 0.1em;
+    margin-bottom: 0.1em;
+  }
+
+  .add-new {
+    margin-left: 1.5em;
+    margin-top: 0.5em;
+    font-size: 1.75vh;
+    border: 1px solid var(--darkblue);
+    width: max-content;
+    background: var(--blue);
+    padding: 0 0.5em;
+    border-radius: 0.25em;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .no-accommodations {
+    font-size: 1.75vh;
+    margin-left: 1.5em;
+  }
+
+  .custom.field {
+    padding: 0.1em;
+    margin-bottom: 0;
+    box-shadow: 0 0 2px var(--input-shadow);
   }

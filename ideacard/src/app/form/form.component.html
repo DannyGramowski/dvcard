@@ -14,25 +14,44 @@
                 <div class="card-description">{{disabilities[selectedPage].description}}</div>
                 <div class="columns">
                     <div class="symptoms">
-                        <div>Symptoms</div>
-                        <div *ngFor="let symptom of disabilities[selectedPage].symptoms; index as k" class="list-item">
-                            <div class="checkbox" id="symptom{{k}}" (click)="checkSymptom(k)"></div>
-                            <div>{{symptom.name}}</div>
+                        <div class="column-header">Symptoms</div>
+                        <div *ngFor="let symptom of disabilities[selectedPage].symptoms; index as k" class="list-item" refresh (init) = "initSymptoms()" >
+                            <div class="checkbox" id="symptom{{k}}" (click)="checkSymptom(k, symptom)"></div>
+                            <div *ngIf="symptom.id >= 0">
+                                <div (click)="checkSymptom(k, symptom)">{{symptom.name}}</div>
+                            </div>
+                            <div *ngIf="symptom.id < 0" class="custom-parent">
+                                <input id="custom-symptom{{symptom.id}}" class="custom field" placeholder="Symptom"/>
+                            </div>
                         </div>
+                        <div class="add-new" (click)="addNewSymptom()">Add other symptom</div>
                     </div>
                     <div class="accommodations">
-                        <div>Accommodations</div>
-                        <div *ngFor="let accommodation of disabilities[selectedPage].accommodations">{{accommodation.name}}</div>
+                        <div class="column-header">Accommodations</div>
+                        <div *ngIf="accommodations.length > 0; else noAccommodations">
+                            <div *ngFor="let accommodation of accommodations; index as k" class="list-item" refresh (init) = "initAccommodations()">
+                                <div class="checkbox" id="accommodation{{k}}" (click)="checkAccommodation(k, accommodation)"></div>
+                                <div *ngIf="accommodation.id >= 0">
+                                    <div (click)="checkAccommodation(k, accommodation)">{{accommodation.name}}</div>
+                                </div>
+                                <div *ngIf="accommodation.id < 0" class="custom-parent">
+                                    <input id="custom-accommodation{{accommodation.id}}" class="custom field" placeholder="Accommodation">
+                                </div>
+                            </div>
+                        </div>
+                        <ng-template #noAccommodations>
+                            <div class="no-accommodations">Select a symptom to see recommended accommodations.</div>
+                        </ng-template>
+                        <div class="add-new" (click)="addNewAccommodation()">Add other accommodation</div>
                     </div>
                 </div>
-                <input class="field email" placeholder="Email Address">
-                <textarea class="field message" placeholder="Message"></textarea>
+                <textarea id="notes" class="field notes" placeholder="Notes (Relation to Job Requirements, Associated Strengths, Further Explanations, etc.)"></textarea>
                 <div class="buttons">
                     <div *ngIf="selectedPage < disabilities.length - 1; else finish">
-                        <div (click)="runFunc()" class="submit button dark-button">Continue ></div>
+                        <div (click)="nextDisability()" class="submit button dark-button">Continue ></div>
                     </div>
                     <ng-template #finish>
-                        <div (click)="runFunc()" class="submit button dark-button">Finish ></div>
+                        <div (click)="continue()" class="submit button dark-button">Finish ></div>
                     </ng-template>
                     <div #pips class="pips">
                         <div *ngFor="let pip of disabilities; index as i" [ngClass]="{'current': i === selectedPage}" id="pip{{i}}" class="pip" (click)="selectPage(i)"></div>

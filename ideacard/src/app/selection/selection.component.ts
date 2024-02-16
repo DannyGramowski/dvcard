@@ -34,15 +34,21 @@ export class SelectionComponent {
   constructor (private disabilityInfo: DisabilityInfoService, private router: Router, private authService: AuthService) { this.getDisabilities(); }
 
   ngAfterContentInit(): void {
-    firebase.auth().onAuthStateChanged(() => {
-      this.authService.getProfile().then(
-        profile => {this.currentUser = profile; this.selectedDisabilities = this.currentUser.disabilities}
-      );
-    });
+    let result = this.authService.getProfileSync();
+    if (result) {
+      this.currentUser = result;
+      this.selectedDisabilities = this.currentUser.disabilities;
+    }
+    else {
+      firebase.auth().onAuthStateChanged(() => {
+        this.authService.getProfile().then(
+          profile => {this.currentUser = profile; this.selectedDisabilities = this.currentUser.disabilities;}
+        );
+      });
+    }
   }
 
   selectCategory(category: Category, i: number) {
-    console.log(category);
     if (this.selectedCategory == i) {
       document.getElementById(`category${this.selectedCategory}`)?.classList.remove('selected-category');
       this.selectedCategory = -1;
@@ -60,7 +66,6 @@ export class SelectionComponent {
     let disabilities = this.disabilityInfo.getDisabilities();
     disabilities = disabilities.filter((d) => d.name.toLowerCase().includes(this.searchValue.toLowerCase()));
     if (this.selectedCategory >= 0) {
-      console.log(this.categories[this.selectedCategory].disabilities.map(item => item.name));
       disabilities = disabilities.filter((d) => this.categories[this.selectedCategory].disabilities.map(item => item.name).includes(d.name));
     }
     this.searchResults = disabilities;
@@ -94,7 +99,7 @@ export class SelectionComponent {
     if (this.isAddGreyed) {
       return;
     }
-    this.selectedDisabilities.push(this.inspected!);
+    this.selectedDisabilities.push(this.disabilityInfo.getRawDisability(this.inspected!.id)!);
     this.inspected = null;
   }
 
@@ -104,8 +109,16 @@ export class SelectionComponent {
 
   continue() {
     this.authService.getProfile().then(
-      profile => {profile.disabilities = this.selectedDisabilities}
+      profile => {profile.disabilities = this.selectedDisabilities.flatMap(d => 
+        {
+          for (let db of profile.disabilities) {
+            if (db.id == d.id) { return db; }
+          }
+          let v = this.disabilityInfo.getRawDisability(d.id);
+          return v ? [v] : []
+        }
+        ); this.router.navigate(['/info-form']);}
     );
-    this.router.navigate(['/info-form']);
+    
   }
 }

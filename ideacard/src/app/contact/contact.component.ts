@@ -9,6 +9,5 @@ import { Component, ViewEncapsulation } from '@angular/core';
 })
 export class ContactComponent {
   runFunc() {
-    console.log('test');
   }
 }
