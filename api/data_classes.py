@@ -5,22 +5,12 @@ class Accommodation(BaseModel):
     name: str
     description: str
 
-    def __init__(self, id, name, description):
-        self.id = id
-        self.name = name
-        self.description = description
-
 class Symptom(BaseModel):
     id: str
     name: str
     description: str
 
-    def __init__(self, id, name, description):
-        self.id = id
-        self.name = name
-        self.description = description
-
-class Disabilities(BaseModel):
+class Disability(BaseModel):
     id: str
     name: str
     description: str
@@ -28,11 +18,8 @@ class Disabilities(BaseModel):
     symptoms: list[Symptom]
     extra_info: str
 
-    def __init__(self, id, name, description, extra_info):
-        self.id = id
-        self.name = name
-        self.description = description
-        self.extra_info = extra_info
+class ID(BaseModel):
+    id: str
 
 class User(BaseModel):
     id: str | None = None
