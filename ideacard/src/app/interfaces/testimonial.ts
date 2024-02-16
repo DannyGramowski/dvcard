@@ -1,6 +1,6 @@
 export interface Testimonial {
-    name: string,
+    fromname: string,
     relationship: string,
-    text: string,
-    timestamp: Date
+    description: string,
+    timestamp: number
 }

@@ -1,1 +1,19 @@
-<p>testimonials works!</p>
+<div class="parent center">
+    <div class="">
+        <div class="testimonial-header">Testimonials</div>
+        <div class="link-text">Link to share your testimonial: <a id="abcdef" class="abcde">{{getLink()}}</a></div>
+        <div class="center">
+            <div class="testimonials">
+                <div *ngFor="let item of testimonials" class="testimonial">
+                    <div class="testimonial-text">
+                        {{item.description}}
+                    </div>
+                    <div class="testimonial-bold">
+                        -{{item.fromname}}, &nbsp;{{item.relationship}} {{item.timestamp}} 
+                        <!-- format timestamp with month and year -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink} from '@angular/router';
 import { FirebaseModule } from '../firebase/firebase.module';
 import { firebase } from 'firebaseui-angular';
 import { AuthService } from '../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -39,7 +38,12 @@ export class LoginComponent {
     const auth = getAuth()
 
     signInWithEmailAndPassword(auth, email, password)
-    .then(credentials => {credentials.user.getIdToken().then(result => this.loginUser(result))})
+    .then(credentials => {credentials.user.getIdToken()
+      .then(result => {
+        this.loginUser(result)
+        this.router.navigateByUrl('dashboard')
+      })
+    })
     .catch(error => {
         console.log(error);
     })

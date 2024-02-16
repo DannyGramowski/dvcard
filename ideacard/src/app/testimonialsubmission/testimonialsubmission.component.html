@@ -1,0 +1,17 @@
+<div class="parent">
+    <div>
+        <div class="bold-text">Submit Your Testimonial</div>
+        <div class="submission-body center">
+            <div class="input-container">
+                <input  type="text" [(ngModel)]="name" class="submission-input" placeholder="Name (First and Last)" aria-label="name input text">
+                <input  type="text" [(ngModel)]="relationship" class="submission-input" placeholder="Relationship" aria-label="relationship input text">
+                <textarea id="messageInput" [(ngModel)]="message" class="submission-input message" placeholder="Message" maxlength=500 aria-label="message input text"></textarea>
+                <!-- <input id="messageInput" type="text" [(ngModel)]="message" class="submission-input message" placeholder="Message" aria-label="name input text"> -->
+                
+                <div class="button-container">
+                    <button class="dark-button submission-button" (click)="submit()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

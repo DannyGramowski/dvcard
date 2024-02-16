@@ -7,9 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 import firebase_admin
 from firebase_admin import firestore, auth, credentials
 from firebase_admin.auth import UserNotFoundError
-from pydantic import BaseModel
 
-from data_classes import User
+from data_classes import User, Testimonial
 
 import secrets
 from typing import Annotated
@@ -56,7 +55,7 @@ app.add_middleware(
 #     return {"status": True}
 
 def decode_token(id_token):
-    decoded_token = auth.verify_id_token(id_token)
+    decoded_token = auth.verify_id_token(id_token, clock_skew_seconds=30)
     uid = decoded_token.get('uid')
     return uid
 
@@ -104,8 +103,7 @@ def get_doc(input: [(str, str)]):
 # will swap over to auth when I figure that out. same for all the other ones
 @app.get("/user")
 def get_user(id_token: Annotated[str | None, Header()] = None):
-    decoded_token = auth.verify_id_token(id_token)
-    user_id = decoded_token['uid']
+    user_id = decode_token(id_token)
     result = get_doc([(USERS, user_id)])
     if result[0] is False:
         return result[1]
@@ -119,8 +117,7 @@ def update_user(userBody: User, id_token: Annotated[str | None, Header()] = None
     Update user attributes besides disabilities
     """
     print(userBody)
-    decoded_token = auth.verify_id_token(id_token)
-    user_id = decoded_token['uid']
+    user_id = decode_token(id_token)
     result = get_doc([(USERS, user_id)])
     if result[0] is False:
         print('user doesnt exist')
@@ -147,8 +144,7 @@ def update_user(userBody: User, id_token: Annotated[str | None, Header()] = None
 
 @app.delete("/user")
 def delete_user(id_token: Annotated[str | None, Header()] = None):
-    decoded_token = auth.verify_id_token(id_token)
-    user_id = decoded_token['uid']
+    user_id = decode_token(id_token)
     doc_ref = get_doc([(USERS, user_id)])
     if doc_ref[0] is False:
         return doc_ref[1]
@@ -163,8 +159,7 @@ def add_disability(disability_id: str, name: str, description: str, id_token: An
     """
     Adds a new disability to the specified user.
     """
-    decoded_token = auth.verify_id_token(id_token)
-    user_id = decoded_token['uid']
+    user_id = decode_token(id_token)
     result = get_doc([(USERS, user_id)])
     if result[0] is False:
         return result[1]
@@ -179,8 +174,7 @@ def get_disabilities(id_token: Annotated[str | None, Header()] = None):
     """
     Gets all of the disabilities of the specified user.
     """
-    decoded_token = auth.verify_id_token(id_token)
-    user_id = decoded_token['uid']
+    user_id = decode_token(id_token)
     return get_disabilities_by_uid(user_id)
     
 def get_disabilities_by_uid(uid: str):
@@ -201,8 +195,7 @@ def update_disability(disability_id: str, name: str = None, description: str = N
     """
     Updates disability of the specified user.
     """
-    decoded_token = auth.verify_id_token(id_token)
-    user_id = decoded_token['uid']
+    user_id = decode_token(id_token)
     doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)])
     if doc_ref[0] is False:
         return doc_ref[1]
@@ -222,8 +215,7 @@ def update_disability(disability_id: str, name: str = None, description: str = N
 
 @app.delete("/disability")
 def delete_disability(disability_id: str, id_token: Annotated[str | None, Header()] = None):
-    decoded_token = auth.verify_id_token(id_token)
-    user_id = decoded_token['uid']
+    user_id = decode_token(id_token)
     doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)])
     if doc_ref[0] is False:
         return doc_ref[1]
@@ -238,8 +230,7 @@ def add_symptom(disability_id: str, symptom_id: str, name: str, description: str
     """
     Adds a new symptom to the specified user and disability.
     """
-    decoded_token = auth.verify_id_token(id_token)
-    user_id = decoded_token['uid']
+    user_id = decode_token(id_token)
     doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)]) 
     if doc_ref[0] is False:
         return doc_ref[1]
@@ -253,8 +244,7 @@ def get_symptoms(disability_id: str, id_token: Annotated[str | None, Header()] =
     """
     Gets all of the symptom of the specified user and disability.
     """
-    decoded_token = auth.verify_id_token(id_token)
-    user_id = decoded_token['uid']
+    user_id = decode_token(id_token)
     symptoms = dict()
     disability_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)])
     if disability_ref[0] is False:
@@ -271,8 +261,7 @@ def update_symptom(disability_id: str, symptom_id:str, name: str = None, descrip
     """
     Updates disability of the specified user.
     """
-    decoded_token = auth.verify_id_token(id_token)
-    user_id = decoded_token['uid']
+    user_id = decode_token(id_token)
     doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id), (SYMPTOMS, symptom_id)])
     if doc_ref[0] is False:
         return doc_ref[1]
@@ -289,8 +278,7 @@ def delete_symptom(disability_id: str, symptom_id: str, id_token: Annotated[str 
     """
     Deletes the syptom from the disability
     """
-    decoded_token = auth.verify_id_token(id_token)
-    user_id = decoded_token['uid']
+    user_id = decode_token(id_token)
     doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id), (SYMPTOMS, symptom_id)])
     if doc_ref[0] is False:
         return doc_ref[1]
@@ -318,8 +306,7 @@ def add_accommodation(disability_id: str, accommodation_id: str, name: str, desc
     """
     Adds a new accommodation to the specified user and disability.
     """
-    decoded_token = auth.verify_id_token(id_token)
-    user_id = decoded_token['uid']
+    user_id = decode_token(id_token)
     doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)])
     if doc_ref[0] is False:
         return doc_ref[1]
@@ -333,8 +320,7 @@ def get_accommodations(disability_id: str, id_token: Annotated[str | None, Heade
     """
     Gets all of the symptom of the specified user and disability.
     """
-    decoded_token = auth.verify_id_token(id_token)
-    user_id = decoded_token['uid']
+    user_id = decode_token(id_token)
     accommodations = dict()
     disability_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id)])
     if disability_ref[0] is False:
@@ -351,8 +337,7 @@ def update_accommodations(disability_id: str, accommodation_id:str, name: str = 
     """
     Updates disability of the specified user.
     """
-    decoded_token = auth.verify_id_token(id_token)
-    user_id = decoded_token['uid']   
+    user_id = decode_token(id_token)
     doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id), (ACCOMMODATIONS, accommodation_id)])
     if doc_ref[0] is False:
         return doc_ref[1]
@@ -369,46 +354,12 @@ def delete_accommodation(disability_id: str, accommodation_id: str, id_token: An
     """
     Deletes the accommodation from the disability
     """
-    decoded_token = auth.verify_id_token(id_token)
-    user_id = decoded_token['uid']   
+    user_id = decode_token(id_token)
     doc_ref = get_doc([(USERS, user_id), (DISABILITIES, disability_id), (ACCOMMODATIONS, accommodation_id)])
     if doc_ref[0] is False:
         return doc_ref[1]
     doc_ref[1].delete()
     return {"success": f"deleted accommodation {accommodation_id}"}
-
-
-#Testimonials
-def get_testimonial_id(id_token: Annotated[str | None, Header()] = None):
-    """
-    Returns the next largest number since testimonials will be ordered sequentially
-    """
-    decoded_token = auth.verify_id_token(id_token)
-    user_id = decoded_token['uid']   
-    doc_ref = get_doc([(USERS, user_id)])[1].collection(TESTIMONIALS)
-    num = -1
-    for testimonial in doc_ref.stream():
-        num = max(int(testimonial.id), num)
-    return num + 1
-
-@app.post("/testimonial")
-def add_testimonial(from_name: str, description: str, relationship: str, id_token: Annotated[str | None, Header()] = None): # date?
-        decoded_token = auth.verify_id_token(id_token)
-        user_to_id = decoded_token['uid']
-        doc_ref = get_doc([(USERS, user_to_id)])
-        if doc_ref[0] is False:
-            return doc_ref[1]
-        
-        testimonial_id = get_testimonial_id(user_to_id)
-        print("testimonial id", testimonial_id)
-        doc_ref = doc_ref[1].collection(TESTIMONIALS).document(str(testimonial_id))
-        doc_ref.set({"id": testimonial_id, "fromname": from_name, "description": description, "relationship": relationship})
-
-@app.get("/testimonial")
-def get_testimonials(id_token: Annotated[str | None, Header()] = None):
-    decoded_token = auth.verify_id_token(id_token)
-    user_id = decoded_token['uid']    
-    return get_testimonials_by_uid(user_id)
 
 def get_testimonials_by_uid(uid: str):
     testimonials = []
@@ -417,15 +368,46 @@ def get_testimonials_by_uid(uid: str):
         return doc_ref[1]
     
     testimonial_ref = doc_ref[1].collection(TESTIMONIALS)
-    for i, testimonial in enumerate(testimonial_ref.stream()):
-        testimonials[i] = testimonial_ref.document(testimonial.id).get().to_dict()
+    for testimonial in testimonial_ref.stream():
+        testimonials.append(testimonial_ref.document(testimonial.id).get().to_dict())
 
     return testimonials
 
+#Testimonials
+def get_testimonial_id(user_id: str):
+    """
+    Returns the next largest number since testimonials will be ordered sequentially
+    """
+    doc_ref = get_doc([(USERS, user_id)])[1].collection(TESTIMONIALS)
+    num = -1
+    for testimonial in doc_ref.stream():
+        num = max(int(testimonial.id), num)
+    return num + 1
+
+@app.post("/testimonial")
+def add_testimonial(testimonial: Testimonial, uuid: Annotated[str | None, Header()] = None): # date?
+    user_to_id = uuid
+    doc_ref = get_doc([(USERS, user_to_id)])
+    if doc_ref[0] is False:
+        return doc_ref[1]
+    
+    testimonial_id = get_testimonial_id(user_to_id)
+    
+    print("testimonial id", testimonial_id)
+    doc_ref = doc_ref[1].collection(TESTIMONIALS).document(str(testimonial_id))
+    doc_ref.set({"id": testimonial_id, "fromname": testimonial.from_name, "description": testimonial.description, "relationship": testimonial.relationship})
+    return {"success": "testimonial added"}
+
+@app.get("/testimonial")
+def get_testimonials(id_token: Annotated[str | None, Header()] = None):
+    user_id = decode_token(id_token)
+    return get_testimonials_by_uid(user_id)
+
+
+
 @app.delete("/testimonial")
 def delete_testimonial(testimonial_id: str, id_token: Annotated[str | None, Header()] = None):
-    decoded_token = auth.verify_id_token(id_token)
-    user_id = decoded_token['uid']
+    user_id = decode_token(id_token)
     doc_ref = get_doc([(USERS, user_id), (TESTIMONIALS, testimonial_id)])
     if doc_ref[0] is False:
         return doc_ref[1]
@@ -485,13 +467,11 @@ def generate_uuid_from_ref(ref):
     return uuid
 
 @app.get('/login')
-def login(Id_Token: Annotated[str | None, Header()] = None):
+def login(id_token: Annotated[str | None, Header()] = None):
     """
     Logs in a user given their UUID.
     """
-    print(Id_Token)
-    decoded_token = auth.verify_id_token(Id_Token)
-    user_id = decoded_token['uid']
+    user_id = decode_token(id_token)
     print("uuid", user_id)
     col_ref = db.collection(USERS)
     doc_exists = False
@@ -508,8 +488,7 @@ def login(Id_Token: Annotated[str | None, Header()] = None):
 
 @app.get('/authcheck')
 def check_auth(id_token: Annotated[str | None, Header()] = None):
-    decoded_token = auth.verify_id_token(id_token)
-    uid = decoded_token.get('uid')
+    uid = decode_token(id_token)
     return {'result': uid}
     pass
 

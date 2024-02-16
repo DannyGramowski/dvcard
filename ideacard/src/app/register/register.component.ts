@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 //import {MatSnackBar} from '@angular/material/snack-bar';
 
@@ -12,6 +13,8 @@ import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } f
 })
 export class RegisterComponent {
   url:string = "http://127.0.0.1:8000";
+
+  constructor(private router: Router) {}
 
   register() {
     let name:string = (<HTMLInputElement>document.getElementById("nameInput"))?.value
@@ -34,6 +37,7 @@ export class RegisterComponent {
       credentials.user.getIdToken()
       .then(result => {
         let headers = new Headers();
+        console.log(result)
         headers.set('Id-Token', result)
         headers.set("Content-Type", 'application/json')
         fetch(`${this.url}/login`, {headers: headers})
@@ -46,7 +50,7 @@ export class RegisterComponent {
                 language: language
               })
             }
-          )
+          ).then(() => {this.router.navigateByUrl('dashboard')})
         })
       })
     })
