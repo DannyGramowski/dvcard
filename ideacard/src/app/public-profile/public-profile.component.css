@@ -81,14 +81,14 @@
 .testimonial-container{
     border-radius: 10px;
     border: 2px solid black;
-    margin: 5vh;
+    margin: 5vh 0vh;
     padding: 2vh;
+    width: 75vw;
 }
 
 .testimonial-text {
     font-size: 15px;
     margin-bottom: 1.5vh;
-    width: 100%;
 }
 
 .testimonial-bold {

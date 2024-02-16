@@ -1,4 +1,4 @@
-<div class="center parent">
+<div *ngIf="profileLoaded" class="center parent">
     <div *ngIf="publicProfile" class="container">
         <div class="profile-name">{{profile.name}}</div>
         <div class="disability-header">Disabilites</div>
