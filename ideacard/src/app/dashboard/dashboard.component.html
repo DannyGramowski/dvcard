@@ -31,7 +31,7 @@
                     </ng-template>
                     <div class="header-buttons">
                         <div class="edit-button button dark-button" (click)="goToEdit()">Edit</div>
-                        <div class="export-button button dark-button" (click)="exportPopup()">Export</div>
+                        <div class="export-button button dark-button" (click)="openExport()">Export</div>
                     </div>
                 </div>
                 <ng-template ngFor let-item [ngForOf]="currentUser.disabilities" let-i="index">
@@ -78,6 +78,53 @@
                         </div>
                     </div>
                 </ng-template>
+
+                
+                <div *ngIf="popupActive" class="popup-container">
+                    <div class="popup">
+                        <div class="popup-text-container">
+                            <div class="popup-text">
+                                How would you like to export your disability information?
+                                <button class="close-button"(click)="closeExport()">X</button>
+                            </div>
+                        </div>
+                        <div class="center">
+                            <div class="sliders">
+                                <div class="slider-container">
+                                    <label class="switch">
+                                        <input type="checkbox" aria-label="public profile">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <div class="label-text">QR code</div>
+                                </div>
+                                <div class="slider-container">
+                                    <label class="switch">
+                                        <input type="checkbox" aria-label="public profile">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <div class="label-text">Name</div>
+                                </div>
+                                <div class="slider-container">
+                                    <label class="switch">
+                                        <input type="checkbox" aria-label="public profile">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <div class="label-text">Testimonials</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="export-container">
+
+                            <div class="export">
+                                <button class="button dark-button export-button" (click)="exportDocx()">DOCX</button>
+                                <div class="export-text">with testemonials</div>
+                            </div>
+                            
+                        </div>
+                        <div class="disclaimer-text">Disclaimer: This is NOT HPAA protected.</div>
+                    </div>
+                </div>
                 <div class="centered-flex">
                     <div (click)="goToSelection()" class="begin-button button dark-button">Select Other Disabilities</div>
                 </div>

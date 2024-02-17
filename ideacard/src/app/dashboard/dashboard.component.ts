@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
 })
 export class DashboardComponent {
   public currentUser: Profile = {name: "", exists: null, disabilities: [], testimonials: [], language: '', location: '', uuid: '', publicprofile: false};
-
+  popupActive: boolean = true;
   constructor (private authService: AuthService, private router: Router) {};
 
   ngAfterContentInit(): void {
@@ -40,7 +40,18 @@ export class DashboardComponent {
     this.router.navigate(['/info-form']);
   }
 
-  exportPopup() {
+  openExport() {
+    //docx
+    //put sliders above for qr code(include disclaimer that this will make your profile public),
+    //include name, testimonials
+    this.popupActive = true;
+  }
+
+  closeExport() {
+    this.popupActive = false
+  }
+
+  exportDocx() {
 
   }
 
