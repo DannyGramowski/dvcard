@@ -40,6 +40,14 @@ export class DashboardComponent {
     this.router.navigate(['/info-form']);
   }
 
+  getPopupToggles() {
+    let qr = (document.getElementById("qrSlider") as HTMLInputElement).checked;
+    let name = (document.getElementById("nameSlider") as HTMLInputElement).checked;
+    let test = (document.getElementById("testSlider") as HTMLInputElement).checked;
+    
+    return {useQR: qr, useName: name, useTestimonials: test};
+  }
+
   openExport() {
     //docx
     //put sliders above for qr code(include disclaimer that this will make your profile public),
@@ -52,7 +60,7 @@ export class DashboardComponent {
   }
 
   exportDocx() {
-
+    console.log(this.getPopupToggles())
   }
 
   deleteDisability(i: number) {
