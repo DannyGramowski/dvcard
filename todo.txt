@@ -1,9 +1,7 @@
 hide password
 align register and sign in on x axis
 fix testimonial submit link
-add confirmation on public profile
 link things
 
-update readme on github to include instructions on how to returns
-make github public
-diagram of 
+update readme on github to include instructions on how to set up server and webpage
+diagram of techstack

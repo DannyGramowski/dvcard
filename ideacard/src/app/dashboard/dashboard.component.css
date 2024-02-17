@@ -205,7 +205,6 @@
 }
 
 .export-button {
-    width: 100%;
     border-radius: 10px;
     border-width: 0px;
     font-weight: var(--bold);
@@ -307,3 +306,34 @@
     -ms-transform: translateX(2.5vh);
     transform: translateX(2.5vh);
   }
+
+  .confirmation {
+    background-color: var(--blue);
+    width: 50vw;
+    border-radius: 10px;
+    padding: 2vh;
+  }
+
+  .confirmation-text {
+    font-size: calc(2vw + 2vh);
+    text-align: center;
+    color: black;
+  }
+
+  .confirmation-buttons {
+    display: flex;
+    justify-content: space-between;
+    }
+
+  .confirmation-button {
+    width: 15vw;
+    border-radius: 10px;
+    border-width: 0px;
+  }
+
+  .confirmation-cancel {
+    background-color: var(--red);
+    font-weight: var(--medium);
+  }
+
+

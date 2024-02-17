@@ -80,7 +80,7 @@
                 </ng-template>
 
                 
-                <div *ngIf="popupActive" class="popup-container">
+                <div *ngIf="popupActive" (after-if)="setSliders()" class="popup-container">
                     <div class="popup">
                         <div class="popup-text-container">
                             <div class="popup-text">
@@ -92,25 +92,28 @@
                             <div class="sliders">
                                 <div class="slider-container">
                                     <label class="switch">
-                                        <input id="qrSlider" type="checkbox" aria-label="public profile">
+                                        <input id="qrSlider" type="checkbox"  (click)="onQRSliderClick()" aria-label="public profile">
+                                        <!-- <input id="qrSlider" type="checkbox" [checked]="useQR" value="useQR" aria-label="public profile"> -->
                                         <span class="slider"></span>
                                     </label>
                                     <div class="label-text">QR code</div>
                                 </div>
                                 <div class="slider-container">
                                     <label class="switch">
-                                        <input id="nameSlider" type="checkbox" aria-label="public profile">
+                                        <input id="nameSlider" type="checkbox" (click)="onNameSliderClick()" aria-label="public profile">
                                         <span class="slider"></span>
                                     </label>
                                     <div class="label-text">Name</div>
                                 </div>
                                 <div class="slider-container">
                                     <label class="switch">
-                                        <input id="testSlider" type="checkbox" aria-label="public profile">
+                                        <input id="testSlider" type="checkbox"  (click)="onTestimonialSliderClick()" aria-label="public profile">
                                         <span class="slider"></span>
                                     </label>
                                     <div class="label-text">Testimonials</div>
                                 </div>
+                                <div *ngIf="setSliders()"></div> 
+                                <!-- doing this to make sure it gets called after all elements have been loaded. I hate it as much as you do-->
                             </div>
                         </div>
 
@@ -125,6 +128,17 @@
                         <div class="disclaimer-text">Disclaimer: This is NOT HPAA protected.</div>
                     </div>
                 </div>
+
+                <div *ngIf="publicProfileConfirmationActive" class="popup-container">
+                    <div class="confirmation">
+                        <div class="confirmation-text">I understand that all of my information will be made public</div>
+                        <div class="confirmation-buttons">
+                            <button class="confirmation-button confirmation-cancel" (click)="closeConfirmationCancel()">Cancel</button>
+                            <button class="confirmation-button dark-button" (click)="closeConfirmationAccept()">Accept</button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="centered-flex">
                     <div (click)="goToSelection()" class="begin-button button dark-button">Select Other Disabilities</div>
                 </div>

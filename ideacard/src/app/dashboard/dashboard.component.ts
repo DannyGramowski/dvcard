@@ -4,18 +4,25 @@ import { firebase } from 'firebaseui-angular';
 import { Profile } from '../interfaces/profile';
 import { FirebaseModule } from '../firebase/firebase.module';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [FirebaseModule, CommonModule],
+  imports: [FirebaseModule, CommonModule, FormsModule],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent {
   public currentUser: Profile = {name: "", exists: null, disabilities: [], testimonials: [], language: '', location: '', uuid: '', publicprofile: false};
-  popupActive: boolean = true;
+  popupActive: boolean = false;
+  publicProfileConfirmationActive: boolean = false;
+  useQR: boolean = false;
+  useName: boolean = false;
+  useTestimonials: boolean = false;
+//  popupToggles = {useQR: false, useName: false, useTestimonials: false}
+
   constructor (private authService: AuthService, private router: Router) {};
 
   ngAfterContentInit(): void {
@@ -40,27 +47,67 @@ export class DashboardComponent {
     this.router.navigate(['/info-form']);
   }
 
-  getPopupToggles() {
-    let qr = (document.getElementById("qrSlider") as HTMLInputElement).checked;
-    let name = (document.getElementById("nameSlider") as HTMLInputElement).checked;
-    let test = (document.getElementById("testSlider") as HTMLInputElement).checked;
-    
-    return {useQR: qr, useName: name, useTestimonials: test};
-  }
-
   openExport() {
     //docx
     //put sliders above for qr code(include disclaimer that this will make your profile public),
     //include name, testimonials
     this.popupActive = true;
+    //this.setSliders();
   }
 
   closeExport() {
-    this.popupActive = false
+    this.popupActive = false;
+  }
+
+  onSliderClick(id:string) {
+    console.log(id);
+  }
+
+  //returning true so I can use it in the ngIf to ensure it gets called
+  setSliders() {
+    (<HTMLInputElement>document.getElementById("qrSlider")).checked = this.useQR;
+    (<HTMLInputElement>document.getElementById("nameSlider")).checked = this.useName;
+    (<HTMLInputElement>document.getElementById("testSlider")).checked = this.useTestimonials;
+    return true;
+  }
+
+  onNameSliderClick() {
+    this.useName = !this.useName;
+    this.setSliders();
+  }
+
+  onTestimonialSliderClick() {
+    this.useTestimonials = !this.useTestimonials;
+    this.setSliders();
+  }
+
+  onQRSliderClick() {
+    if(!this.useQR) {
+      this.popupActive = false;
+      this.publicProfileConfirmationActive = true;
+    } else {
+      this.useQR = false;
+      this.setSliders()
+    }
+  }
+
+  closeConfirmationAccept() {
+    this.publicProfileConfirmationActive = false;
+    this.popupActive = true;
+    this.useQR = true;
+    //this.setSliders();
+    console.log(this)
+  }
+
+  closeConfirmationCancel() {
+    this.publicProfileConfirmationActive = false;
+    this.popupActive = true;
+    this.useQR = false;
+    //this.setSliders();
   }
 
   exportDocx() {
-    console.log(this.getPopupToggles())
+    console.log(this)
   }
 
   deleteDisability(i: number) {
