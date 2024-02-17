@@ -7,5 +7,6 @@ export interface Disability {
     description: string,
     extrainfo: string,
     symptoms: Symptom[],
-    accommodations: Accommodation[]
+    accommodations: Accommodation[],
+    link: string
 }

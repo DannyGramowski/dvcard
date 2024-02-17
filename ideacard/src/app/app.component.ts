@@ -6,16 +6,20 @@ import { AuthService } from './services/auth.service';
 import { firebase } from 'firebaseui-angular';
 import { PopupComponent } from './popup/popup.component';
 import environment from '../environments/environment';
+import { Profile } from './interfaces/profile';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, PopupComponent, RouterLink, RouterLinkActive, FirebaseModule],
+  imports: [RouterOutlet, PopupComponent, RouterLink, RouterLinkActive, FirebaseModule, CommonModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
   
+  public currentUser: Profile = {name: "", exists: null, disabilities: [], testimonials: [], language: '', location: '', uuid: '', publicprofile: false};
+
   title = 'ideacard';
 
   constructor (
@@ -25,7 +29,9 @@ export class AppComponent {
   ngOnInit() {
     firebase.initializeApp(environment.firebaseConfig);
     firebase.auth().onAuthStateChanged(() => {
-      this.authService.getProfile();
-    }); 
+      this.authService.getProfile().then(profile => 
+        this.currentUser = profile
+      )
+    });
   }
 }

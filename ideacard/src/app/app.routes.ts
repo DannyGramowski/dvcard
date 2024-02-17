@@ -10,6 +10,7 @@ import { FormComponent } from './form/form.component';
 import { TestimonialSubmissionComponent } from './testimonialsubmission/testimonialsubmission.component';
 import { TestSubmitSuccessComponent } from './test-submit-success/test-submit-success.component';
 import { PublicProfileComponent } from './public-profile/public-profile.component';
+import { AccountComponent } from './account/account.component';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent},
@@ -22,5 +23,6 @@ export const routes: Routes = [
     {path: 'info-form', component: FormComponent},
     {path: 'submittestimonial/:uuid', component: TestimonialSubmissionComponent},
     {path: 'submitsuccess', component: TestSubmitSuccessComponent},
-    {path: 'profile/:uuid', component: PublicProfileComponent}
+    {path: 'profile/:uuid', component: PublicProfileComponent},
+    {path: 'account', component: AccountComponent}
 ];
