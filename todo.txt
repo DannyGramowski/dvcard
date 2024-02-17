@@ -1,4 +1,3 @@
-hide password
 align register and sign in on x axis
 fix testimonial submit link
 link things
