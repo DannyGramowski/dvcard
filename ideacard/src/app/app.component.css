@@ -14,13 +14,14 @@
     padding-top: 1vh;
     padding-bottom: 1vh;
     background: var(--darkblue);
+    cursor: pointer;
 }
 .logo > img {
     height: 100%;
 }
 .links {
     display: flex;
-    margin-right: 5vw;
+    margin-right: 2vw;
     font-family: Poppins;
     font-weight: var(--medium);
     font-size: 2.2vh;
@@ -45,4 +46,19 @@
 
 .link:hover {
     color: rgb(77, 93, 120);
+}
+
+.user-image {
+    background: var(--darkblue);
+    width: 4vh;
+    height: 4vh;
+    padding: 1vh;
+    font-size: 3.5vh;
+    color: var(--white);
+    margin-left: 3vw;
+    cursor: pointer;
+    user-select: none;
+    text-align: end;
+    border-radius: 4px;
+    margin-left: 2vw;
 }

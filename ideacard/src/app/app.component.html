@@ -2,14 +2,16 @@
     <link href="https://fonts.googleapis.com/css?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
 </head>
 <div class="header">
-    <div class="logo">
+    <div class="logo" routerLink="/" routerLinkActive="active">
         <img src="../assets/logo.png" alt="Idea card logo"/>
     </div>
     <div class="links">
         <div routerLink="/" routerLinkActive="active" class="link">Home</div>
-        <div routerLink="/testimonials" routerLinkActive="active" class="link">Testimonials</div>
+        <div *ngIf="currentUser.exists" routerLink="/dashboard" routerLinkActive="active" class="link">Dashboard</div>
+        <div *ngIf="currentUser.exists" routerLink="/testimonials" routerLinkActive="active" class="link">Testimonials</div>
         <div routerLink="/contact" routerLinkActive="active" class="link">Contact Us</div>
-        <div routerLink="/login" routerLinkActive="active" class="link">Account</div>
+        <div *ngIf="currentUser.exists == null || currentUser.exists == false" routerLink="/register" routerLinkActive="active" class="link">Log In</div>
+        <div *ngIf="currentUser.exists == true" class="user-image center" routerLink="/account" routerLinkActive="active">{{currentUser.name[0]}}</div>
     </div>
 </div>
 <router-outlet></router-outlet>

@@ -63,6 +63,12 @@ export class FormComponent {
 
   // NOTE the following function will run once per symptom. DO NOT expect this to be a once-per-render deal.
   initSymptoms() {
+    // This is still broken; specifically reloading a page once you've already been there in a single form session. Don't ask why.
+    for (let d of this.disabilities) {
+      for (let i in d.symptoms) {
+        document.getElementById(`symptom${i}`)?.classList.remove('checked');
+      }
+    }
     this.disabilities[this.selectedPage].symptoms.forEach((s, i) => {
       if (this.currentUser.disabilities[this.selectedPage].symptoms.includes(s)) {
         document.getElementById(`symptom${i}`)?.classList.add('checked');
@@ -195,7 +201,7 @@ export class FormComponent {
         min = a.id;
       }
     }
-    let a = {id: min - 1, name: "", description: ""};
+    let a = {id: min - 1, name: "", description: "", link: ""};
     this.currentUser.disabilities[this.selectedPage].accommodations.push(a);
     this.disabilities[this.selectedPage].accommodations.push(a);
     this.generateAccommodations();
