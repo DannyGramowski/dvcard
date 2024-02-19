@@ -88,7 +88,7 @@
                                 <button class="close-button"(click)="closeExport()">X</button>
                             </div>
                         </div>
-                        <div class="center">
+                        <div class="center sliders-extra-container">
                             <div class="sliders">
                                 <div class="slider-container">
                                     <label class="switch">
@@ -120,7 +120,15 @@
                         <div class="export-container">
 
                             <div class="export">
-                                <button class="button dark-button export-button" (click)="exportDocx()">DOCX</button>
+                                <button class="button dark-button popup-export-buttons" (click)="exportDocx()">PDF</button>
+                                <div class="export-text">with testemonials</div>
+                            </div>
+                            <div class="export">
+                                <button class="button dark-button popup-export-buttons" (click)="exportDocx()">Buisness Card</button>
+                                <div class="export-text">without testemonials</div>
+                            </div>
+                            <div class="export">
+                                <button class="button dark-button popup-export-buttons" (click)="exportDocx()">QR Code</button>
                                 <div class="export-text">with testemonials</div>
                             </div>
                             
