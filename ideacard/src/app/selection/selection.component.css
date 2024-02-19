@@ -200,10 +200,10 @@ input:focus{
 
 .popup {
     position: fixed;
-    height: 75vh;
+    /* height: 75vh; */
     width: calc(55vw + 10vh);
-    bottom: 10vh;
     left: calc(22.5vw - 5vh);
+    top: 10vh;
     background-color: var(--darkblue);
     border-radius: 10px;
     box-shadow: 0px 0px 8px var(--input-shadow);
@@ -250,7 +250,7 @@ input:focus{
 }
 
 .popup-main {
-    height: 58vh;
+    /* height: 58vh; */
 }
 
 .popup-buttons {

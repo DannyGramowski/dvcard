@@ -221,27 +221,37 @@
     height: 3vh;
     border-width: 0px;
     float: right;
+    margin: 1vh;
 }
 
+.popup-export-buttons {
+    border-radius: 10px;
+    border-width: 0px;
+    font-weight: var(--bold);
+    font-size: calc(1vh + 0.5vw);
+    display: block;
+    margin: 0 auto;
+}
 .close-button:hover {
     background-color: rgb(242, 36, 36);
     display: inline;
     cursor: pointer;
 }
 
-.slider-container {
-    display: inline;
-    width: 16vh;
-    margin: 2vh 5vh;
+.sliders-extra-container {
+    width: 100%;
 }
 
-.sliders-container {
-    display: flex;
+.slider-container {
+    display: inline;
+    width: 23vh;
+    margin: 2vh calc(5.5vw);
 }
 
 .sliders {
-    display: grid;
-    grid-auto-flow: column;
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 .label-text {
