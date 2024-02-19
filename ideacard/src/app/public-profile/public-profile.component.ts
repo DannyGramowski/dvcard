@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Profile } from '../interfaces/profile';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-public-profile',
@@ -17,7 +18,7 @@ export class PublicProfileComponent implements OnInit {
   publicProfile: boolean
   profileLoaded: boolean
 
-  constructor(private route: ActivatedRoute, private router: Router) {
+  constructor(private route: ActivatedRoute, private router: Router, private api: ApiService) {
     this.uuid = this.route.snapshot.paramMap.get('uuid') ?? "not valid uuid";
     this.publicProfile = false
     this.profileLoaded = false;
@@ -25,7 +26,7 @@ export class PublicProfileComponent implements OnInit {
   }
   
   ngOnInit(): void {
-    fetch(`http://127.0.0.1:8000/publicprofile?user_id=${this.uuid}`)
+    fetch(`${this.api.url}/publicprofile?user_id=${this.uuid}`)
     .then(res => {
       res.json()
       .then(data => {

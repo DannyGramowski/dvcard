@@ -5,6 +5,7 @@ import { firebase } from 'firebaseui-angular';
 import { AuthService } from '../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,8 @@ export class LoginComponent {
 
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private api: ApiService
   ) {};
 
   ngOnInit(): void {
@@ -25,7 +27,7 @@ export class LoginComponent {
   }
 
   loginUser(authToken: string) : void{
-    const url = "http://127.0.0.1:8000";
+    const url = this.api.url;
     console.log(authToken);
     let headers = new Headers();
     headers.set('Id-Token', authToken);

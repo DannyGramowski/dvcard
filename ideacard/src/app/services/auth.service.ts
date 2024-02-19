@@ -6,19 +6,21 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
 import { map } from 'rxjs/operators';
 import { lastValueFrom } from 'rxjs';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private url: string = "http://127.0.0.1:8000";
+  private url: string;
 
   private token: string | undefined | null;
   private profile: Profile = {name: '', exists: null, disabilities: [], testimonials: [], language: '', location: '', uuid: '', publicprofile: false};
 
   constructor(
+    private api: ApiService
     //private http: HttpClient
-  ) { }
+  ) { this.url = api.url; }
 
   async getToken() {
     if (! this.token) {
