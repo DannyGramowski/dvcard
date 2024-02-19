@@ -83,10 +83,11 @@
                 <div *ngIf="popupActive" (after-if)="setSliders()" class="popup-container">
                     <div class="popup">
                         <div class="popup-text-container">
-                            <div class="popup-text">
-                                How would you like to export your disability information?
-                                <button class="close-button"(click)="closeExport()">X</button>
-                            </div>
+                            <div class="popup-text">How would you like to export your disability information?</div>
+                            <button class="close-button"(click)="closeExport()">X</button>
+                        </div>
+                        <div class="explanation">
+                            Choose which optional elements you would like to include on your page:
                         </div>
                         <div class="center sliders-extra-container">
                             <div class="sliders">
@@ -116,30 +117,33 @@
                                 <!-- doing this to make sure it gets called after all elements have been loaded. I hate it as much as you do-->
                             </div>
                         </div>
+                        <div class="explanation">
+                            Select an export type to download your IDEA Card:
+                        </div>
 
                         <div class="export-container">
 
                             <div class="export">
-                                <button class="button dark-button popup-export-buttons" (click)="exportDocx()">PDF</button>
+                                <button class="button dark-button popup-export-buttons" (click)="exportPDF()">PDF</button>
                                 <div class="export-text">with testemonials</div>
                             </div>
                             <div class="export">
-                                <button class="button dark-button popup-export-buttons" (click)="exportDocx()">Buisness Card</button>
+                                <button class="button dark-button popup-export-buttons" (click)="exportBusinessCard()">Buisness Card</button>
                                 <div class="export-text">without testemonials</div>
                             </div>
                             <div class="export">
-                                <button class="button dark-button popup-export-buttons" (click)="exportDocx()">QR Code</button>
+                                <button class="button dark-button popup-export-buttons" (click)="exportQR()">QR Code</button>
                                 <div class="export-text">with testemonials</div>
                             </div>
                             
                         </div>
-                        <div class="disclaimer-text">Disclaimer: This is NOT HPAA protected.</div>
+                        <div class="disclaimer-text">Disclaimer: This data is NOT protected by HIPAA.</div>
                     </div>
                 </div>
 
                 <div *ngIf="publicProfileConfirmationActive" class="popup-container">
                     <div class="confirmation">
-                        <div class="confirmation-text">I understand that all of my information will be made public</div>
+                        <div class="confirmation-text">I understand that, by adding a QR code to my IDEA Card, a public profile will be generated.</div>
                         <div class="confirmation-buttons">
                             <button class="confirmation-button confirmation-cancel" (click)="closeConfirmationCancel()">Cancel</button>
                             <button class="confirmation-button dark-button" (click)="closeConfirmationAccept()">Accept</button>
