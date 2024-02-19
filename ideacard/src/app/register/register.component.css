@@ -24,6 +24,7 @@
 
 .form-container {
     margin-top: 9vh;
+    display: block;
 }
 
 input::placeholder {
@@ -31,6 +32,7 @@ input::placeholder {
 }
 
 .register-input {
+    display: block;
     color: rgb(104, 105, 105);
     width: 30em;
     height: 4em;
