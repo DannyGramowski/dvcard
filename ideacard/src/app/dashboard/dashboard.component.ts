@@ -110,6 +110,18 @@ export class DashboardComponent {
     console.log(this)
   }
 
+  exportPDF() {
+    
+  }
+
+  exportBusinessCard() {
+
+  }
+
+  exportQR() {
+
+  }
+
   deleteDisability(i: number) {
     this.currentUser.disabilities.splice(i, 1);
   }

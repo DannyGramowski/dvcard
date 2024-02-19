@@ -244,7 +244,12 @@ def get_user_or_none(uuid):
     user = result[1].get().to_dict()
     return user
 
+@app.get("/export")
 def export(ftype: str, id_token: Annotated[str | None, Header()] = None):
+    
+    return FileResponse('assets/exports/demo_pdf.pdf')
+
+    # this would be great... if we had an export system
     decoded_token = auth.verify_id_token(id_token)
     user_id = decoded_token['uid']
     user = get_user_or_none(user_id)

@@ -29,6 +29,10 @@ export class AuthService {
     return this.token;
   }
 
+  getTokenSync() {
+    return this.token ? this.token : null;
+  }
+
   async getProfile() {
     if (! this.token) {
       await this.getToken();
