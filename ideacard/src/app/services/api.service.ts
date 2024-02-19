@@ -7,15 +7,19 @@ import { AuthService } from './auth.service';
 export class ApiService {
   
   public url: string = "http://34.69.37.0";
+  private token: string = "";
 
-  constructor(private authService: AuthService) { }
+  constructor() { }
+
+  setToken(token: string) {
+    this.token = token;
+  }
 
   async getDownload(type: string) {
-    let token = this.authService.getTokenSync();
-    if (!token) { return null; }
+    if (!this.token) { return null; }
 
     let headers = new Headers();
-    headers.set('Id-Token', token);
+    headers.set('Id-Token', this.token);
     let blob = await (await fetch(`${this.url}/export?ftype=${type}`, {headers: headers})).blob();
     if (!blob) {
       return null;
@@ -28,6 +32,7 @@ export class ApiService {
     a.click();
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
+    return null;
   }
 
   downloadURI(uri: string, name: string) {

@@ -6,6 +6,7 @@ import { FirebaseModule } from '../firebase/firebase.module';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,7 +24,7 @@ export class DashboardComponent {
   useTestimonials: boolean = false;
 //  popupToggles = {useQR: false, useName: false, useTestimonials: false}
 
-  constructor (private authService: AuthService, private router: Router) {};
+  constructor (private authService: AuthService, private router: Router, private api: ApiService) {};
 
   ngAfterContentInit(): void {
     let result = this.authService.getProfileSync();
@@ -111,15 +112,15 @@ export class DashboardComponent {
   }
 
   exportPDF() {
-    
+    this.api.getDownload('PDF');
   }
 
   exportBusinessCard() {
-
+    this.api.getDownload('Business-Card');
   }
 
   exportQR() {
-
+    this.api.getDownload('QR');
   }
 
   deleteDisability(i: number) {

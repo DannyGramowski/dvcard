@@ -1,6 +1,11 @@
 .about {
     min-height: 60vh;
     margin-top: 2vh;
+    background: var(--darkblue);
+}
+
+.page {
+    margin: 0;
 }
 
 .getstarted {
@@ -11,7 +16,29 @@
 }
 
 .getstarted > .button {
+    background: var(--white);
+    color: var(--darkblue);
     font-size: calc(1vw + 2vh);
     font-weight: var(--bold);
     border-radius: 1vw;
+    margin-bottom: 5vh;
+    margin-top: 5vh;
+}
+
+.main-banner {
+    height: 55vh;
+    width: 100%;
+    display: flex;
+    margin-top: 5vh;
+    justify-content: center;
+    align-items: center;
+}
+
+.left-img {
+    height: 50vh;
+    margin-right: 12vw;
+}
+
+.right-img {
+    height: 50vh;
 }
