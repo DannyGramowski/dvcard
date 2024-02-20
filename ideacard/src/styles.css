@@ -20,6 +20,10 @@ body {
     overflow-y: scroll;
 }
 
+button {
+    font-family: Poppins;
+}
+
 ::-webkit-scrollbar {
     /* display: none; */
 }

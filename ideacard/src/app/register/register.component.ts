@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { ApiService } from '../services/api.service';
 //import {MatSnackBar} from '@angular/material/snack-bar';
 
 
@@ -12,9 +13,9 @@ import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } f
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
-  url:string = "http://127.0.0.1:8000";
+  url:string;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private api: ApiService) { this.url = api.url; }
 
   register() {
     let name:string = (<HTMLInputElement>document.getElementById("nameInput"))?.value

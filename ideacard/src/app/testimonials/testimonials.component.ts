@@ -30,7 +30,7 @@ export class TestimonialsComponent  {
   }
 
   getLink(): string {
-     return `http://localhost:4200/submittestimonial/${this.uuid}`
+     return `http://idea-card.com/submittestimonial/${this.uuid}`
     //  return `www.ideacard.com/submittestimonial/${this.uuid}`
     // return 1`https://www.w3schools.com/html/html_links.asp
   }

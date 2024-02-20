@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-testimonialsubmission',
@@ -17,7 +18,7 @@ export class TestimonialSubmissionComponent {
   maxMessageLength: number = 450
   uuid: string;
 
-  constructor(private route: ActivatedRoute, private router: Router) {
+  constructor(private route: ActivatedRoute, private router: Router, private api: ApiService) {
       this.uuid = this.route.snapshot.paramMap.get('uuid') ?? "not valid uuid";
   }
 
@@ -30,7 +31,7 @@ export class TestimonialSubmissionComponent {
     let headers = new Headers();
     headers.set("Content-Type", 'application/json')
     headers.set("uuid", this.uuid)
-    fetch("http://127.0.0.1:8000/testimonial", {
+    fetch(`${this.api.url}/testimonial`, {
       method: 'POST', headers: headers,
       body: JSON.stringify({
         from_name: this.name,
