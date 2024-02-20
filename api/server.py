@@ -372,9 +372,9 @@ def get_profile(Id_Token: Annotated[str | None, Header()] = None):
     user_id = decode_token(Id_Token)
     doc_ref = get_doc([(USERS, user_id)])
     if doc_ref[0] is False:
-        return {'name': 'test', 'exists': True, 'disabilities': [{'id': 0, 'name': 'Disability Name', 'description': 'This is an example of a disability', 'symptoms': [{'id': 0, 'name': 'Symptom 1', 'description': 'Test Description'}], 'accommodations': []}]*2, 'testimonials': []}
+        # return {'name': 'test', 'exists': True, 'disabilities': [{'id': 0, 'name': 'Disability Name', 'description': 'This is an example of a disability', 'symptoms': [{'id': 0, 'name': 'Symptom 1', 'description': 'Test Description'}], 'accommodations': []}]*2, 'testimonials': []}
         #return doc_ref[1]
-    
+        return
     user = get_user_or_none(user_id)
     user.update({'disabilities': get_disabilities_by_uid(user_id), 'testimonials': get_testimonials_by_uid(user_id)})
 

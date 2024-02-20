@@ -15,7 +15,8 @@ import { Router } from '@angular/router';
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent {
-  public currentUser: Profile = {name: "", exists: null, disabilities: [], testimonials: [], language: '', location: '', uuid: '', publicprofile: false};
+  private default: Profile = {name: "", exists: null, disabilities: [], testimonials: [], language: '', location: '', uuid: '', publicprofile: false};
+  public currentUser: Profile = this.default;
   popupActive: boolean = false;
   publicProfileConfirmationActive: boolean = false;
   useQR: boolean = false;
@@ -26,14 +27,21 @@ export class DashboardComponent {
   constructor (private authService: AuthService, private router: Router) {};
 
   ngAfterContentInit(): void {
+    console.log('ngAftercontentInit')
     let result = this.authService.getProfileSync();
     if (result) {
+      console.log('result')
+      console.log(result)
       this.currentUser = result;
     }
     else {
+      console.log('else')
       firebase.auth().onAuthStateChanged(() => {
         this.authService.getProfile().then(
-          profile => {this.currentUser = profile;}
+          profile => {
+            this.currentUser = profile; 
+            console.log(profile);
+          }
         );
       });
     }

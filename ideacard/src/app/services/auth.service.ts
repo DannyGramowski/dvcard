@@ -37,14 +37,19 @@ export class AuthService {
     if (this.profile.exists != true) {
       let headers = new Headers();
       headers.set('Id-Token', this.token);
+      console.log(this.token);
       //this.profile = await lastValueFrom(this.http.get<Profile>(`${this.url}/profile`, {headers: headers}));
       this.profile = await (await fetch(`${this.url}/profile`, {headers: headers})).json();
+      console.log('getProfile')
+      console.log(this.profile);
       this.profile.exists = true;
     }
     return this.profile;
   }
 
   getProfileSync() {
+    console.log('getprofile sync')
+    console.log(this.profile)
     return this.profile.exists ? this.profile : null;
   }
   
