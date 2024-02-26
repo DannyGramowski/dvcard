@@ -26,6 +26,9 @@ export class AuthService {
     if (! this.token) {
       this.token = await firebase.auth().currentUser?.getIdToken();
     }
+    if (this.token) {
+      this.api.setToken(this.token);
+    }
     return this.token;
   }
 

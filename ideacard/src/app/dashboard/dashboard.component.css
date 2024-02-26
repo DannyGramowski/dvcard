@@ -347,6 +347,7 @@
     font-size: calc(1vw + 2vh);
     text-align: center;
     color: black;
+    margin-bottom: 4vh;
   }
 
   .confirmation-buttons {
